@@ -10,7 +10,7 @@ let config = {
     },
     width: 1000,
     height: 1000,
-    scene: [Load]
+    scene: [Init, Run]
 }
 
 const game = new Phaser.Game(config);
