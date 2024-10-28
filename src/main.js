@@ -8,10 +8,9 @@ let config = {
     render: {
         pixelArt: true  // prevent pixel art from getting blurred when scaled
     },
-    fps: { forceSetTimeOut: true, target: 60 },   // ensure consistent timing across machines
-    width: 600,
-    height: 800,
-    scene: [LVL_1]
+    width: 1000,
+    height: 1000,
+    scene: [Load]
 }
 
 const game = new Phaser.Game(config);
