@@ -61,21 +61,9 @@ class Init extends Phaser.Scene {
             all: this.all,
         });
 
-        //Reload key
-        this.reload = this.input.keyboard.addKey('R');
-
         //update instruction text
         document.getElementById('description').innerHTML = `
         <h2>WFC.js</h2><br>
         R: Restart Scene (to regenerate map)<br>`;
-    }
-
-    update() {
-      if (Phaser.Input.Keyboard.JustDown(this.reload)){
-        // this.seed = Math.random();
-        // noise.seed(this.seed);
-        this.scene.restart();
-    }
-
     }
 }

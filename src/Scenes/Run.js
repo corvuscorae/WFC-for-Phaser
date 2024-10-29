@@ -208,6 +208,9 @@ class Run extends Phaser.Scene {
             }
         });
         */
+                
+        //Reload key
+        this.reload = this.input.keyboard.addKey('R');
 
         this.ready = this.makeTilesArray("demo");
     }
@@ -238,6 +241,12 @@ class Run extends Phaser.Scene {
     update() {
         if(this.ready){ this.WFC(); }
         if(this.brakes) { this.stopWFC() }
+
+        if (Phaser.Input.Keyboard.JustDown(this.reload)){
+          // this.seed = Math.random();
+          // noise.seed(this.seed);
+          this.scene.restart();
+        }
     }
 
     // TODO: scene slows down when "Go" is clicked several times. Likely mem leak -- FIND AND FIX
