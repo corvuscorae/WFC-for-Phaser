@@ -58,17 +58,12 @@ class Tile {
     //newImg.imageMode(CENTER);
     //newImg.translate(w / 2, h / 2);
     //newImg.angle = (Phaser.Math.TAU * num);
-    const newImg = this.scene.add.graphics({x: w, y: h});
-    newImg.setOrigin(0,0);
-    newImg.rotateCanvas(Phaser.Math.TAU * num);
-    newImg.generateTexture(this.img.key, w, h);
-    //console.log(newImg)
     
     const newEdges = [];
     const len = this.edges.length;
     for (let i = 0; i < len; i++) {
       newEdges[i] = this.edges[(i - num + len) % len];
     }
-    return new Tile(newImg, newEdges, this.index);
+    return new Tile(this.img, newEdges, this.index);
   }
 }

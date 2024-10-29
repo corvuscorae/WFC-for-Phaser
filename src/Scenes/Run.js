@@ -139,7 +139,7 @@ class Run extends Phaser.Scene {
         let tempTiles = [];
         for (let j = 0; j < 4; j++) {
             // TODO: fix rotate() in Tile.js
-            // tempTiles.push(this.tiles[i].rotate(j));
+            tempTiles.push(this.tiles[i].rotate(j));
         }
         tempTiles = this.removeDuplicatedTiles(tempTiles);
         this.tiles = this.tiles.concat(tempTiles);
