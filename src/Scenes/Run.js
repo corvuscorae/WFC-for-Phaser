@@ -18,9 +18,11 @@ class Run extends Phaser.Scene {
       this.tiles = [];
       this.grid = [];
       this.DIM = 20;
+      this.drawn = Array(this.DIM * this.DIM).fill(null); // Initialize with nulls for all cells
       this.ready = false;
       this.brakes = false;
       this.seed = 142404;
+      this.choiceStack = [];
 
       console.log(this.all)
   }
@@ -253,155 +255,310 @@ class Run extends Phaser.Scene {
       // console.log("----------");
   }
 
-  update() {
-      if(this.ready){ this.WFC(); }
-      if(this.brakes) { this.stopWFC() }
-      
-      if (Phaser.Input.Keyboard.JustDown(this.reload)){
-        // this.seed = Math.random();
-        // noise.seed(this.seed);
-        this.scene.restart();
-      }
-  }
+    update() {
+        if(this.ready){ this.WFC(); }
+        if(this.brakes) { this.stopWFC() }
 
-  // TODO: scene slows down when "Go" is clicked several times. Likely mem leak -- FIND AND FIX
-  stopWFC(){
-      for(let d of this.drawn){ d.destroy(); }
-      this.textures = [];
+        if (Phaser.Input.Keyboard.JustDown(this.reload)){
+          // this.seed = Math.random();
+          // noise.seed(this.seed);
+          // this.scene.restart();
+          this.clearGrid();
+        }
+    }
+
+    // TODO: scene slows down when "Go" is clicked several times. Likely mem leak -- FIND AND FIX
+    stopWFC() {
+      if (this.drawn) {
+          for (let d of this.drawn) {
+              if (d) d.destroy();
+          }
+      }
       this.tiles = [];
       this.grid = [];
+      this.drawn = [];
       this.ready = false;
       this.brakes = false;
-    }
-    
-  WFC() {
-      this.drawn = [];
+  }
+  
+      
+    // WFC() {
+    //     this.drawn = [];
+    //     const w = this.canvas.width / this.DIM;
+    //     const h = this.canvas.height / this.DIM;
+    //     for (let j = 0; j < this.DIM; j++) {
+    //       for (let i = 0; i < this.DIM; i++) {
+    //         let cell = this.grid[i + j * this.DIM];
+    //         if (cell.collapsed) {
+    //             let index = cell.options[0];
+    //             //this.add.image(this.tiles[index].img, i * w, j * h, w, h);
+    //             this.drawn.push(this.add.image(i * w, j * h, this.tiles[index].img)
+    //                 .setScale(1,1)
+    //                 .setOrigin(0,0)
+    //             );
+    //         } else {
+    //           //noFill();
+    //           //stroke(51);
+    //           //rect(i * w, j * h, w, h);
+    //           this.drawn.push(this.add.rectangle(i * w, j * h, w, h, "black")
+    //             .setOrigin(0,0)
+    //           );
+    //         }
+    //       }
+    //     }
+      
+    //     // Pick cell with least entropy
+    //     let gridCopy = this.grid.slice();
+    //     gridCopy = gridCopy.filter((a) => !a.collapsed);
+      
+    //     if (gridCopy.length == 0) {
+    //       //this.brakes = true;
+    //       return;
+    //     }
+    //     gridCopy.sort((a, b) => {
+    //       return a.options.length - b.options.length;
+    //     });
+      
+    //     let len = gridCopy[0].options.length;
+    //     let stopIndex = 0;
+    //     for (let i = 1; i < gridCopy.length; i++) {
+    //       if (gridCopy[i].options.length > len) {
+    //         stopIndex = i;
+    //         break;
+    //       }
+    //     }
+      
+    //     if (stopIndex > 0) gridCopy.splice(stopIndex);
+    //     const cell = Phaser.Utils.Array.GetRandom(gridCopy);
+    //     cell.collapsed = true;
+    //     const pick = Phaser.Utils.Array.GetRandom(cell.options);
+    //     if (pick === undefined) {
+    //       this.startOver();
+    //       //this.brakes = true;
+    //       return;
+    //     }
+    //     cell.options = [pick];
+      
+    //     const nextGrid = [];
+    //     for (let j = 0; j < this.DIM; j++) {
+    //       for (let i = 0; i < this.DIM; i++) {
+    //         let index = i + j * this.DIM;
+    //         if (this.grid[index].collapsed) {
+    //           nextGrid[index] = this.grid[index];
+    //         } else {
+    //           let options = new Array(this.tiles.length).fill(0).map((x, i) => i);
+    //           // Look up
+    //           if (j > 0) {
+    //             let up = this.grid[i + (j - 1) * this.DIM];
+    //             let validOptions = [];
+    //             for (let option of up.options) {
+    //               let valid = this.tiles[option].down;
+    //               validOptions = validOptions.concat(valid);
+    //             }
+    //             this.checkValid(options, validOptions);
+    //           }
+    //           // Look right
+    //           if (i < this.DIM - 1) {
+    //             let right = this.grid[i + 1 + j * this.DIM];
+    //             let validOptions = [];
+    //             for (let option of right.options) {
+    //               let valid = this.tiles[option].left;
+    //               validOptions = validOptions.concat(valid);
+    //             }
+    //             this.checkValid(options, validOptions);
+    //           }
+    //           // Look down
+    //           if (j < this.DIM - 1) {
+    //             let down = this.grid[i + (j + 1) * this.DIM];
+    //             let validOptions = [];
+    //             for (let option of down.options) {
+    //               let valid = this.tiles[option].up;
+    //               validOptions = validOptions.concat(valid);
+    //             }
+    //             this.checkValid(options, validOptions);
+    //           }
+    //           // Look left
+    //           if (i > 0) {
+    //             let left = this.grid[i - 1 + j * this.DIM];
+    //             let validOptions = [];
+    //             for (let option of left.options) {
+    //               let valid = this.tiles[option].right;
+    //               validOptions = validOptions.concat(valid);
+    //             }
+    //             this.checkValid(options, validOptions);
+    //           }
+      
+    //           // I could immediately collapse if only one option left?
+    //           nextGrid[index] = new Cell(options);
+    //         }
+    //       }
+      
+    //     }
+      
+    //     this.grid = nextGrid;
+    //   }
+
+    WFC() {
       const w = this.canvas.width / this.DIM;
       const h = this.canvas.height / this.DIM;
+  
+      // Draw only cells that need updating
       for (let j = 0; j < this.DIM; j++) {
-        for (let i = 0; i < this.DIM; i++) {
-          let cell = this.grid[i + j * this.DIM];
-          if (cell.collapsed) {
-              let index = cell.options[0];
-              //this.add.image(this.tiles[index].img, i * w, j * h, w, h);
-              this.drawn.push(this.add.image(i * w, j * h, this.tiles[index].img)
-                  .setScale(1,1)
-                  .setOrigin(0,0)
-              );
-          } else {
-            //noFill();
-            //stroke(51);
-            //rect(i * w, j * h, w, h);
-            this.drawn.push(this.add.rectangle(i * w, j * h, w, h, "black")
-              .setOrigin(0,0)
-            );
+          for (let i = 0; i < this.DIM; i++) {
+              let cell = this.grid[i + j * this.DIM];
+              if (cell && cell.collapsed && !this.drawn[i + j * this.DIM]) {
+                  let index = cell.options[0];
+                  if (this.tiles[index]) {
+                      this.drawn[i + j * this.DIM] = this.add.image(i * w, j * h, this.tiles[index].img)
+                          .setScale(1, 1)
+                          .setOrigin(0, 0);
+                  }
+              }
           }
-        }
       }
-    
-      // Pick cell with least entropy
-      let gridCopy = this.grid.slice();
-      gridCopy = gridCopy.filter((a) => !a.collapsed);
-    
-      if (gridCopy.length == 0) {
-        //this.brakes = true;
-        return;
+  
+      // Get cells with the least entropy
+      let minEntropy = Infinity;
+      let minEntropyCells = [];
+      for (let cell of this.grid) {
+          if (!cell.collapsed) {
+              const entropy = cell.options.length;
+              if (entropy < minEntropy) {
+                  minEntropy = entropy;
+                  minEntropyCells = [cell];
+              } else if (entropy === minEntropy) {
+                  minEntropyCells.push(cell);
+              }
+          }
       }
-      gridCopy.sort((a, b) => {
-        return a.options.length - b.options.length;
+  
+      // If all cells are collapsed, exit
+      if (minEntropyCells.length === 0) {
+          return;
+      }
+  
+      // Collapse a random cell with minimum entropy
+      const cell = Phaser.Utils.Array.GetRandom(minEntropyCells);
+      cell.collapsed = true;
+  
+      // Save state before choice for backtracking
+      this.choiceStack.push({
+          cellIndex: this.grid.indexOf(cell),
+          remainingOptions: [...cell.options]
       });
-    
-      let len = gridCopy[0].options.length;
-      let stopIndex = 0;
-      for (let i = 1; i < gridCopy.length; i++) {
-        if (gridCopy[i].options.length > len) {
-          stopIndex = i;
-          break;
-        }
-      }
-    
-      if (stopIndex > 0) gridCopy.splice(stopIndex);
-
-      // When using seeds change up values per run maybe?
-
-      if(this.seed){ 
-        const cell = this.getRandomWithSeed(gridCopy, this.seed);
-        cell.collapsed = true;
-        const pick = this.getRandomWithSeed(cell.options, this.seed + 1);
-        if (pick === undefined) {
-          this.startOver();
-          //this.brakes = true;
+  
+      const pick = Phaser.Utils.Array.GetRandom(cell.options);
+      if (pick === undefined) {
+          this.backtrack();
           return;
-        }
-        cell.options = [pick];
-      } else {
-        const cell = Phaser.Utils.Array.GetRandom(gridCopy);
-        cell.collapsed = true;
-        const pick = Phaser.Utils.Array.GetRandom(cell.options);
-        if (pick === undefined) {
-          this.startOver();
-          //this.brakes = true;
-          return;
-        }
-        cell.options = [pick];
       }
-    
-      const nextGrid = [];
+      cell.options = [pick];
+  
+      // Update neighbors based on adjacency rules, checking for deadlocks
+      if (!this.updateNeighbors(cell)) {
+          this.backtrack();  // Trigger backtracking if neighbors have no options
+      }
+  }
+  
+  // Update neighbors and validate adjacency constraints, returns false if stuck
+  updateNeighbors(cell) {
+      let updated = true;
       for (let j = 0; j < this.DIM; j++) {
-        for (let i = 0; i < this.DIM; i++) {
-          let index = i + j * this.DIM;
-          if (this.grid[index].collapsed) {
-            nextGrid[index] = this.grid[index];
-          } else {
-            let options = new Array(this.tiles.length).fill(0).map((x, i) => i);
-            // Look up
-            if (j > 0) {
-              let up = this.grid[i + (j - 1) * this.DIM];
-              let validOptions = [];
-              for (let option of up.options) {
-                let valid = this.tiles[option].down;
-                validOptions = validOptions.concat(valid);
+          for (let i = 0; i < this.DIM; i++) {
+              let index = i + j * this.DIM;
+              let cell = this.grid[index];
+  
+              if (!cell || cell.collapsed) continue;
+  
+              let options = Array.from({ length: this.tiles.length }, (_, i) => i);
+  
+              // Check valid options from each direction
+              if (j > 0) {
+                  let up = this.grid[i + (j - 1) * this.DIM];
+                  let validOptions = [];
+                  for (let option of up.options) {
+                      if (this.tiles[option] && this.tiles[option].down) {
+                          validOptions = validOptions.concat(this.tiles[option].down);
+                      }
+                  }
+                  this.checkValid(options, validOptions);
               }
-              this.checkValid(options, validOptions);
-            }
-            // Look right
-            if (i < this.DIM - 1) {
-              let right = this.grid[i + 1 + j * this.DIM];
-              let validOptions = [];
-              for (let option of right.options) {
-                let valid = this.tiles[option].left;
-                validOptions = validOptions.concat(valid);
+              if (i < this.DIM - 1) {
+                  let right = this.grid[i + 1 + j * this.DIM];
+                  let validOptions = [];
+                  for (let option of right.options) {
+                      if (this.tiles[option] && this.tiles[option].left) {
+                          validOptions = validOptions.concat(this.tiles[option].left);
+                      }
+                  }
+                  this.checkValid(options, validOptions);
               }
-              this.checkValid(options, validOptions);
-            }
-            // Look down
-            if (j < this.DIM - 1) {
-              let down = this.grid[i + (j + 1) * this.DIM];
-              let validOptions = [];
-              for (let option of down.options) {
-                let valid = this.tiles[option].up;
-                validOptions = validOptions.concat(valid);
+              if (j < this.DIM - 1) {
+                  let down = this.grid[i + (j + 1) * this.DIM];
+                  let validOptions = [];
+                  for (let option of down.options) {
+                      if (this.tiles[option] && this.tiles[option].up) {
+                          validOptions = validOptions.concat(this.tiles[option].up);
+                      }
+                  }
+                  this.checkValid(options, validOptions);
               }
-              this.checkValid(options, validOptions);
-            }
-            // Look left
-            if (i > 0) {
-              let left = this.grid[i - 1 + j * this.DIM];
-              let validOptions = [];
-              for (let option of left.options) {
-                let valid = this.tiles[option].right;
-                validOptions = validOptions.concat(valid);
+              if (i > 0) {
+                  let left = this.grid[i - 1 + j * this.DIM];
+                  let validOptions = [];
+                  for (let option of left.options) {
+                      if (this.tiles[option] && this.tiles[option].right) {
+                          validOptions = validOptions.concat(this.tiles[option].right);
+                      }
+                  }
+                  this.checkValid(options, validOptions);
               }
-              this.checkValid(options, validOptions);
-            }
-    
-            // I could immediately collapse if only one option left?
-            nextGrid[index] = new Cell(options);
+  
+              // Update cell options if they have changed
+              cell.options = options;
+              if (options.length === 0) {
+                  updated = false;
+              } else if (options.length === 1) {
+                  cell.collapsed = true;
+              }
           }
-        }
-    
       }
-    
-      this.grid = nextGrid;
-    }
+      return updated;
+  }
+  
+  // Improved backtracking mechanism
+  backtrack() {
+      if (this.choiceStack.length === 0) {
+          this.startOver();  // Restart if no choices left to backtrack
+          return;
+      }
+  
+      // Pop the last choice from the stack and undo it
+      const lastChoice = this.choiceStack.pop();
+      const { cellIndex, remainingOptions } = lastChoice;
+      const cell = this.grid[cellIndex];
+  
+      remainingOptions.splice(remainingOptions.indexOf(cell.options[0]), 1);
+  
+      if (remainingOptions.length > 0) {
+          cell.options = remainingOptions;
+          cell.collapsed = false;  // Reopen the cell for processing
+          this.choiceStack.push({ cellIndex, remainingOptions });  // Push updated choice back to stack
+          // Update neighbors recursively to avoid deadlocks after each backtrack
+          if (!this.updateNeighbors(cell)) {
+              this.backtrack();
+          }
+      } else {
+          this.backtrack();  // If no options, backtrack further
+      }
+  }
+  
+  clearGrid() {
+    // Reset grid, drawn cells, and other states
+    this.grid = Array(this.DIM * this.DIM).fill(null).map(() => new Cell(this.tiles.length));
+    this.drawn.forEach(d => { if (d) d.destroy(); });
+    this.drawn = Array(this.DIM * this.DIM).fill(null);
+    this.ready = true;  // Reset ready state
+}
+  
 }
