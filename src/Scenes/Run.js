@@ -21,7 +21,7 @@ class Run extends Phaser.Scene {
       this.drawn = Array(this.DIM * this.DIM).fill(null); // Initialize with nulls for all cells
       this.ready = false;
       this.brakes = false;
-      this.seed = 142404;
+      this.seed = 132134;
       this.choiceStack = [];
 
       console.log(this.all)
@@ -173,7 +173,7 @@ class Run extends Phaser.Scene {
           this.grid[i] = new Cell(this.tiles.length);
       }
   }
-  // Linear Congruential Generator based on values from Borland C/C++
+  // Linear Congruential Generator based on values from Knuth and H. W. Lewis
   seededRandom(seed) {
     let m = 2 ** 32;
     let a = 1664525;
@@ -183,6 +183,7 @@ class Run extends Phaser.Scene {
   }
   
   getRandomWithSeed(array, seed){
+    if(!seed){seed = Math.random()*10133204323}
     const randomIndex = Math.floor(this.seededRandom(seed) * array.length);
     console.log(randomIndex);
     return array[randomIndex];
@@ -438,7 +439,7 @@ class Run extends Phaser.Scene {
       }
   
       // Collapse a random cell with minimum entropy
-      const cell = Phaser.Utils.Array.GetRandom(minEntropyCells);
+      const cell = this.getRandomWithSeed(minEntropyCells,this.seed);
       cell.collapsed = true;
   
       // Save state before choice for backtracking
@@ -447,7 +448,7 @@ class Run extends Phaser.Scene {
           remainingOptions: [...cell.options]
       });
   
-      const pick = Phaser.Utils.Array.GetRandom(cell.options);
+      const pick = this.getRandomWithSeed(cell.options, this.seed);
       if (pick === undefined) {
           this.backtrack();
           return;
