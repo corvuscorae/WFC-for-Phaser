@@ -21,8 +21,9 @@ class Run extends Phaser.Scene {
       this.drawn = Array(this.DIM * this.DIM).fill(null); // Initialize with nulls for all cells
       this.ready = false;
       this.brakes = false;
-      this.seed = 132134;
+      //this.seed = 132134;
       this.choiceStack = [];
+      this.entropyTexts = [];
 
       console.log(this.all)
   }
@@ -169,6 +170,7 @@ class Run extends Phaser.Scene {
 
   startOver() {
       // Create cell for each spot on the grid
+      this.entropyTexts = Array.from({ length: this.DIM }, () => Array(this.DIM).fill(null));
       for (let i = 0; i < this.DIM * this.DIM; i++) {
           this.grid[i] = new Cell(this.tiles.length);
       }
@@ -185,14 +187,13 @@ class Run extends Phaser.Scene {
   getRandomWithSeed(array, seed){
     if(!seed){seed = Math.random()*10133204323}
     const randomIndex = Math.floor(this.seededRandom(seed) * array.length);
-    console.log(randomIndex);
     return array[randomIndex];
   }
 
   create() {
       this.canvas = {width: config.width, height: config.height}
       const directory = "tiles/"
-      /*
+    /*
       // USER INPUT
       let div = document.createElement("div");
       div.innerHTML = "directory: ";
@@ -226,20 +227,13 @@ class Run extends Phaser.Scene {
           }
       });
       */
-     
+
       //Reload key
       this.reload = this.input.keyboard.addKey('R');
 
       this.ready = this.makeTilesArray("demo");
   }
 
-  startOver() {
-      // Create cell for each spot on the grid
-      for (let i = 0; i < this.DIM * this.DIM; i++) {
-          this.grid[i] = new Cell(this.tiles.length);
-      }
-    }
-    
   checkValid(arr, valid) {
       //console.log(arr, valid);
       for (let i = arr.length - 1; i >= 0; i--) {
@@ -278,6 +272,8 @@ class Run extends Phaser.Scene {
       this.tiles = [];
       this.grid = [];
       this.drawn = [];
+      this.entropyTexts.forEach(row => row.forEach(text => text.destroy()));
+      this.entropyTexts = [];
       this.ready = false;
       this.brakes = false;
   }
@@ -398,7 +394,6 @@ class Run extends Phaser.Scene {
       
     //     this.grid = nextGrid;
     //   }
-
     WFC() {
       const w = this.canvas.width / this.DIM;
       const h = this.canvas.height / this.DIM;
@@ -407,6 +402,12 @@ class Run extends Phaser.Scene {
       for (let j = 0; j < this.DIM; j++) {
           for (let i = 0; i < this.DIM; i++) {
               let cell = this.grid[i + j * this.DIM];
+              const entropy = cell.options.length;
+              if(!cell.collapsed && this.entropyTexts[j][i] == undefined){
+                this.entropyTexts[j][i] = this.add.text(i * w, j * h, `${entropy}`, { fontFamily: 'Arial', fontSize: 12, color: 'white'});
+              } else if(!cell.collapsed){
+                this.entropyTexts[j][i].setText(`${entropy}`)
+              }
               if (cell && cell.collapsed && !this.drawn[i + j * this.DIM]) {
                   let index = cell.options[0];
                   if (this.tiles[index]) {
@@ -458,6 +459,9 @@ class Run extends Phaser.Scene {
       // Update neighbors based on adjacency rules, checking for deadlocks
       if (!this.updateNeighbors(cell)) {
           this.backtrack();  // Trigger backtracking if neighbors have no options
+      }
+      if(minEntropy == Infinity){
+        this.brakes = true;
       }
   }
   
@@ -522,6 +526,8 @@ class Run extends Phaser.Scene {
               } else if (options.length === 1) {
                   cell.collapsed = true;
               }
+            const entropy = cell.options.length;
+            this.entropyTexts[j][i].setText(entropy.toString())
           }
       }
       return updated;
@@ -557,9 +563,12 @@ class Run extends Phaser.Scene {
   clearGrid() {
     // Reset grid, drawn cells, and other states
     this.grid = Array(this.DIM * this.DIM).fill(null).map(() => new Cell(this.tiles.length));
+    this.entropyTexts.forEach(row => row.forEach(text => text.destroy()));
+    this.entropyTexts = Array.from({ length: this.DIM }, () => Array(this.DIM).fill(null));
     this.drawn.forEach(d => { if (d) d.destroy(); });
     this.drawn = Array(this.DIM * this.DIM).fill(null);
     this.ready = true;  // Reset ready state
+    
 }
   
 }

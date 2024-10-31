@@ -1,6 +1,5 @@
 issues:
 - TODO: scene slows down when "Go" is clicked several times. Likely mem leak -- FIND AND FIX
-- TODO: need to fix rotate() in Tile.js
 
 next:
 - add map tiles
@@ -14,3 +13,4 @@ next:
 CONTRIBUTIONS:
 [add your contributions here]
 - Raven Cruz: initial CodingTrain WFC algorithm translation into Phaser, set up tile adjacency lists
+- William Klunder: adjusted rotate to work properly, added seed usage, implemented entropy display
