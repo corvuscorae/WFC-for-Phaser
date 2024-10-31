@@ -21,7 +21,7 @@ class Run extends Phaser.Scene {
       this.drawn = Array(this.DIM * this.DIM).fill(null); // Initialize with nulls for all cells
       this.ready = false;
       this.brakes = false;
-      //this.seed = 132134;
+      //this.seed = 4532323321;
       this.choiceStack = [];
       this.entropyTexts = [];
 
@@ -170,7 +170,13 @@ class Run extends Phaser.Scene {
 
   startOver() {
       // Create cell for each spot on the grid
-      this.entropyTexts = Array.from({ length: this.DIM }, () => Array(this.DIM).fill(null));
+      if(!this.entropyTexts){
+        this.entropyTexts = Array.from({ length: this.DIM }, () => Array(this.DIM).fill(null));
+    }
+      else{
+        this.entropyTexts.forEach(row => row.forEach(text => text.destroy()));
+        this.entropyTexts = Array.from({ length: this.DIM }, () => Array(this.DIM).fill(null));
+      }
       for (let i = 0; i < this.DIM * this.DIM; i++) {
           this.grid[i] = new Cell(this.tiles.length);
       }
@@ -536,7 +542,8 @@ class Run extends Phaser.Scene {
   // Improved backtracking mechanism
   backtrack() {
       if (this.choiceStack.length === 0) {
-          this.startOver();  // Restart if no choices left to backtrack
+          this.clearGrid();  // Restart if no choices left to backtrack
+          this.seed *= 2;
           return;
       }
   
