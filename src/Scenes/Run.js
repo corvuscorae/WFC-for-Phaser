@@ -12,7 +12,6 @@ class Run extends Phaser.Scene {
       return Object.values(uniqueTilesMap);
   }
 
-
   init(data) {
       this.all = data.all;
       this.tiles = [];
@@ -142,13 +141,12 @@ class Run extends Phaser.Scene {
       for (let i = 0; i < initialTileCount; i++) {
       let tempTiles = [];
       for (let j = 0; j < 4; j++) {
-          // TODO: fix rotate() in Tile.js
-          tempTiles.push(this.tiles[i].rotate(j));
+          tempTiles.push(this.tiles[i].rotate(j, path));
       }
       tempTiles = this.removeDuplicatedTiles(tempTiles);
       this.tiles = this.tiles.concat(tempTiles);
       }
-      //console.log(tiles.length);
+      console.log(this.all);
       
       // Generate the adjacency rules based on edges
       for (let i = 0; i < this.tiles.length; i++) {
@@ -417,9 +415,11 @@ class Run extends Phaser.Scene {
               if (cell && cell.collapsed && !this.drawn[i + j * this.DIM]) {
                   let index = cell.options[0];
                   if (this.tiles[index]) {
-                      this.drawn[i + j * this.DIM] = this.add.image(i * w, j * h, this.tiles[index].img)
-                          .setScale(1, 1)
+                        this.drawn[i + j * this.DIM] = this.add.image(i * w, j * h, this.tiles[index].img)
                           .setOrigin(0, 0);
+                        this.drawn[i + j * this.DIM].setScale(
+                            w / this.drawn[i + j * this.DIM].width,
+                            h / this.drawn[i + j * this.DIM].height);
                   }
               }
           }

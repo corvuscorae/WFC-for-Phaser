@@ -21,22 +21,22 @@ class Init extends Phaser.Scene {
         ]
     
       // naming convention: [i].png 
-      //let indexedDirectories = [  
-      //  {path: "circuit", num: 13},
-      //  {path: "circuit-coding-train", num: 13},
-      //  {path: "rail", num: 7},
-      //  {path: "kenney-all", num: 20},
-      //  {path: "kenney-curvy", num: 16},
-      //]
+      let indexedDirectories = [  
+        {path: "circuit", num: 13},
+        {path: "circuit-coding-train", num: 13},
+        {path: "rail", num: 7},
+        {path: "kenney-all", num: 20},
+        {path: "kenney-curvy", num: 16},
+      ]
     
-      //for(let dir of indexedDirectories){
-      //  let imageKeys = [];
-      //  for (let i = 0; i < dir.num; i++) { 
-      //      imageKeys[i] = `${dir.path}_${i}`;
-      //      this.load.image(imageKeys[i],`${dir.path}/${i}.png`); 
-      //  }
-      //  this.all.push({ key: dir.path, array: imageKeys });
-      //}
+      for(let dir of indexedDirectories){
+        let imageKeys = [];
+        for (let i = 0; i < dir.num; i++) { 
+            imageKeys[i] = `${dir.path}_${i}`;
+            this.load.image(imageKeys[i],`${dir.path}/${i}.png`); 
+        }
+        this.all.push({ key: dir.path, array: imageKeys });
+      }
     
       for(let dir of directionDirectories){
         let imageKeys = [];
