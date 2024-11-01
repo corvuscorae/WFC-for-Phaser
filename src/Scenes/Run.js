@@ -2,15 +2,6 @@ class Run extends Phaser.Scene {
   constructor() {
       super("runScene");
   }
-  
-  removeDuplicatedTiles(tiles) {
-      const uniqueTilesMap = {};
-      for (const tile of tiles) {
-        const key = tile.edges.join(','); // ex: "ABB,BCB,BBA,AAA"
-        uniqueTilesMap[key] = tile;
-      }
-      return Object.values(uniqueTilesMap);
-  }
 
   init(data) {
       this.all = data.all;
@@ -197,40 +188,6 @@ class Run extends Phaser.Scene {
   create() {
       this.canvas = {width: config.width, height: config.height}
       const directory = "tiles/"
-    /*
-      // USER INPUT
-      let div = document.createElement("div");
-      div.innerHTML = "directory: ";
-      div.style.x = 50;
-      div.style.y = this.canvas.height + 25;
-      document.body.appendChild(div);
-    
-      let input = document.createElement("input");
-      input.style.x = 50;
-      input.style.y = this.canvas.height + 50;
-      document.body.appendChild(input);
-
-      let button = document.createElement("button");
-      button.innerHTML = "GO";
-      button.style.x = input.x + input.width;
-      button.style.y = input.y;
-      document.body.appendChild(button);
-
-      button.addEventListener("click", () => {
-          if(!this.ready && input.value.length > 0){
-              this.ready = this.makeTilesArray(input.value);
-          }
-          // TODO: scene slows down when "Go" is clicked several times. Likely mem leak -- FIND AND FIX
-          else if(this.ready && input.value.length > 0){
-              //this.stopWFC();
-              ////let path = directory + input.value;
-              //this.ready = this.makeTilesArray(input.value);
-              this.scene.start("runScene", {
-                  all: this.all,
-              });
-          }
-      });
-      */
 
       //Reload key
       this.reload = this.input.keyboard.addKey('R');
@@ -281,123 +238,7 @@ class Run extends Phaser.Scene {
       this.ready = false;
       this.brakes = false;
   }
-  
-      
-    // WFC() {
-    //     this.drawn = [];
-    //     const w = this.canvas.width / this.DIM;
-    //     const h = this.canvas.height / this.DIM;
-    //     for (let j = 0; j < this.DIM; j++) {
-    //       for (let i = 0; i < this.DIM; i++) {
-    //         let cell = this.grid[i + j * this.DIM];
-    //         if (cell.collapsed) {
-    //             let index = cell.options[0];
-    //             //this.add.image(this.tiles[index].img, i * w, j * h, w, h);
-    //             this.drawn.push(this.add.image(i * w, j * h, this.tiles[index].img)
-    //                 .setScale(1,1)
-    //                 .setOrigin(0,0)
-    //             );
-    //         } else {
-    //           //noFill();
-    //           //stroke(51);
-    //           //rect(i * w, j * h, w, h);
-    //           this.drawn.push(this.add.rectangle(i * w, j * h, w, h, "black")
-    //             .setOrigin(0,0)
-    //           );
-    //         }
-    //       }
-    //     }
-      
-    //     // Pick cell with least entropy
-    //     let gridCopy = this.grid.slice();
-    //     gridCopy = gridCopy.filter((a) => !a.collapsed);
-      
-    //     if (gridCopy.length == 0) {
-    //       //this.brakes = true;
-    //       return;
-    //     }
-    //     gridCopy.sort((a, b) => {
-    //       return a.options.length - b.options.length;
-    //     });
-      
-    //     let len = gridCopy[0].options.length;
-    //     let stopIndex = 0;
-    //     for (let i = 1; i < gridCopy.length; i++) {
-    //       if (gridCopy[i].options.length > len) {
-    //         stopIndex = i;
-    //         break;
-    //       }
-    //     }
-      
-    //     if (stopIndex > 0) gridCopy.splice(stopIndex);
-    //     const cell = Phaser.Utils.Array.GetRandom(gridCopy);
-    //     cell.collapsed = true;
-    //     const pick = Phaser.Utils.Array.GetRandom(cell.options);
-    //     if (pick === undefined) {
-    //       this.startOver();
-    //       //this.brakes = true;
-    //       return;
-    //     }
-    //     cell.options = [pick];
-      
-    //     const nextGrid = [];
-    //     for (let j = 0; j < this.DIM; j++) {
-    //       for (let i = 0; i < this.DIM; i++) {
-    //         let index = i + j * this.DIM;
-    //         if (this.grid[index].collapsed) {
-    //           nextGrid[index] = this.grid[index];
-    //         } else {
-    //           let options = new Array(this.tiles.length).fill(0).map((x, i) => i);
-    //           // Look up
-    //           if (j > 0) {
-    //             let up = this.grid[i + (j - 1) * this.DIM];
-    //             let validOptions = [];
-    //             for (let option of up.options) {
-    //               let valid = this.tiles[option].down;
-    //               validOptions = validOptions.concat(valid);
-    //             }
-    //             this.checkValid(options, validOptions);
-    //           }
-    //           // Look right
-    //           if (i < this.DIM - 1) {
-    //             let right = this.grid[i + 1 + j * this.DIM];
-    //             let validOptions = [];
-    //             for (let option of right.options) {
-    //               let valid = this.tiles[option].left;
-    //               validOptions = validOptions.concat(valid);
-    //             }
-    //             this.checkValid(options, validOptions);
-    //           }
-    //           // Look down
-    //           if (j < this.DIM - 1) {
-    //             let down = this.grid[i + (j + 1) * this.DIM];
-    //             let validOptions = [];
-    //             for (let option of down.options) {
-    //               let valid = this.tiles[option].up;
-    //               validOptions = validOptions.concat(valid);
-    //             }
-    //             this.checkValid(options, validOptions);
-    //           }
-    //           // Look left
-    //           if (i > 0) {
-    //             let left = this.grid[i - 1 + j * this.DIM];
-    //             let validOptions = [];
-    //             for (let option of left.options) {
-    //               let valid = this.tiles[option].right;
-    //               validOptions = validOptions.concat(valid);
-    //             }
-    //             this.checkValid(options, validOptions);
-    //           }
-      
-    //           // I could immediately collapse if only one option left?
-    //           nextGrid[index] = new Cell(options);
-    //         }
-    //       }
-      
-    //     }
-      
-    //     this.grid = nextGrid;
-    //   }
+
     WFC() {
       const w = this.canvas.width / this.DIM;
       const h = this.canvas.height / this.DIM;

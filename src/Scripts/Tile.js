@@ -54,10 +54,6 @@ class Tile {
     let scene = Run;
     const w = this.img.width;
     const h = this.img.height;
-    //const newImg = new Image(Run, w / 2, h / 2);
-    //newImg.imageMode(CENTER);
-    //newImg.translate(w / 2, h / 2);
-    //newImg.angle = (Phaser.Math.TAU * num);
     
     const newEdges = [];
     const len = this.edges.length;
