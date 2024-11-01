@@ -14,6 +14,7 @@ class Run extends Phaser.Scene {
       //this.seed = 4532323321;
       this.choiceStack = [];
       this.entropyTexts = [];
+      this.rotationLog = [];
 
       console.log(this.all)
   }
@@ -30,95 +31,95 @@ class Run extends Phaser.Scene {
       }
       switch(path){
       case "rail":
-          this.tiles[0] = new Tile(tileImages[0], ['AAA', 'AAA', 'AAA', 'AAA'], undefined , this);
-          this.tiles[1] = new Tile(tileImages[1], ['ABA', 'ABA', 'ABA', 'AAA'], undefined , this);
-          this.tiles[2] = new Tile(tileImages[2], ['BAA', 'AAB', 'AAA', 'AAA'], undefined , this);
-          this.tiles[3] = new Tile(tileImages[3], ['BAA', 'AAA', 'AAB', 'AAA'], undefined , this);
-          this.tiles[4] = new Tile(tileImages[4], ['ABA', 'ABA', 'AAA', 'AAA'], undefined , this);
-          this.tiles[5] = new Tile(tileImages[5], ['ABA', 'AAA', 'ABA', 'AAA'], undefined , this);
-          this.tiles[6] = new Tile(tileImages[6], ['ABA', 'ABA', 'ABA', 'ABA'], undefined , this);
+          this.tiles[0] = new Tile(tileImages[0], ['AAA', 'AAA', 'AAA', 'AAA']);
+          this.tiles[1] = new Tile(tileImages[1], ['ABA', 'ABA', 'ABA', 'AAA']);
+          this.tiles[2] = new Tile(tileImages[2], ['BAA', 'AAB', 'AAA', 'AAA']);
+          this.tiles[3] = new Tile(tileImages[3], ['BAA', 'AAA', 'AAB', 'AAA']);
+          this.tiles[4] = new Tile(tileImages[4], ['ABA', 'ABA', 'AAA', 'AAA']);
+          this.tiles[5] = new Tile(tileImages[5], ['ABA', 'AAA', 'ABA', 'AAA']);
+          this.tiles[6] = new Tile(tileImages[6], ['ABA', 'ABA', 'ABA', 'ABA']);
           break;
       case "circuit":
       case "circuit-coding-train":
-          this.tiles[0] = new Tile(tileImages[0], ['AAA', 'AAA', 'AAA', 'AAA'], undefined , this);
-          this.tiles[1] = new Tile(tileImages[1], ['BBB', 'BBB', 'BBB', 'BBB'], undefined , this);
-          this.tiles[2] = new Tile(tileImages[2], ['BBB', 'BCB', 'BBB', 'BBB'], undefined , this);
-          this.tiles[3] = new Tile(tileImages[3], ['BBB', 'BDB', 'BBB', 'BDB'], undefined , this);
-          this.tiles[4] = new Tile(tileImages[4], ['ABB', 'BCB', 'BBA', 'AAA'], undefined , this);
-          this.tiles[5] = new Tile(tileImages[5], ['ABB', 'BBB', 'BBB', 'BBA'], undefined , this);
-          this.tiles[6] = new Tile(tileImages[6], ['BBB', 'BCB', 'BBB', 'BCB'], undefined , this);
-          this.tiles[7] = new Tile(tileImages[7], ['BDB', 'BCB', 'BDB', 'BCB'], undefined , this);
-          this.tiles[8] = new Tile(tileImages[8], ['BDB', 'BBB', 'BCB', 'BBB'], undefined , this);
-          this.tiles[9] = new Tile(tileImages[9], ['BCB', 'BCB', 'BBB', 'BCB'], undefined , this);
-          this.tiles[10] = new Tile(tileImages[10], ['BCB', 'BCB', 'BCB', 'BCB'], undefined , this);
-          this.tiles[11] = new Tile(tileImages[11], ['BCB', 'BCB', 'BBB', 'BBB'], undefined , this);
-          this.tiles[12] = new Tile(tileImages[12], ['BBB', 'BCB', 'BBB', 'BCB'], undefined , this);
+          this.tiles[0] = new Tile(tileImages[0], ['AAA', 'AAA', 'AAA', 'AAA']);
+          this.tiles[1] = new Tile(tileImages[1], ['BBB', 'BBB', 'BBB', 'BBB']);
+          this.tiles[2] = new Tile(tileImages[2], ['BBB', 'BCB', 'BBB', 'BBB']);
+          this.tiles[3] = new Tile(tileImages[3], ['BBB', 'BDB', 'BBB', 'BDB']);
+          this.tiles[4] = new Tile(tileImages[4], ['ABB', 'BCB', 'BBA', 'AAA']);
+          this.tiles[5] = new Tile(tileImages[5], ['ABB', 'BBB', 'BBB', 'BBA']);
+          this.tiles[6] = new Tile(tileImages[6], ['BBB', 'BCB', 'BBB', 'BCB']);
+          this.tiles[7] = new Tile(tileImages[7], ['BDB', 'BCB', 'BDB', 'BCB']);
+          this.tiles[8] = new Tile(tileImages[8], ['BDB', 'BBB', 'BCB', 'BBB']);
+          this.tiles[9] = new Tile(tileImages[9], ['BCB', 'BCB', 'BBB', 'BCB']);
+          this.tiles[10] = new Tile(tileImages[10], ['BCB', 'BCB', 'BCB', 'BCB']);
+          this.tiles[11] = new Tile(tileImages[11], ['BCB', 'BCB', 'BBB', 'BBB']);
+          this.tiles[12] = new Tile(tileImages[12], ['BBB', 'BCB', 'BBB', 'BCB']);
           break;
       case "demo":
       case "polka":
       case "roads":
-          this.tiles[0] = new Tile(tileImages[0], ['AAA', 'AAA', 'AAA', 'AAA'], undefined , this);
-          this.tiles[1] = new Tile(tileImages[1], ['AAA', 'BBB', 'BBB', 'BBB'], undefined , this);
-          this.tiles[2] = new Tile(tileImages[2], ['BBB', 'AAA', 'BBB', 'BBB'], undefined , this);
-          this.tiles[3] = new Tile(tileImages[3], ['BBB', 'BBB', 'BBB', 'AAA'], undefined , this);
-          this.tiles[4] = new Tile(tileImages[4], ['BBB', 'BBB', 'AAA', 'BBB'], undefined , this);
+          this.tiles[0] = new Tile(tileImages[0], ['AAA', 'AAA', 'AAA', 'AAA']);
+          this.tiles[1] = new Tile(tileImages[1], ['AAA', 'BBB', 'BBB', 'BBB']);
+          this.tiles[2] = new Tile(tileImages[2], ['BBB', 'AAA', 'BBB', 'BBB']);
+          this.tiles[3] = new Tile(tileImages[3], ['BBB', 'BBB', 'BBB', 'AAA']);
+          this.tiles[4] = new Tile(tileImages[4], ['BBB', 'BBB', 'AAA', 'BBB']);
           break;
       case "mountains": // fix adjacencies ??
-          this.tiles[0] = new Tile(tileImages[0], ['AAA', 'AAA', 'AAA', 'AAA'], undefined , this);
-          this.tiles[1] = new Tile(tileImages[1], ['BAB', 'BBB', 'BBB', 'BBB'], undefined , this);
-          this.tiles[2] = new Tile(tileImages[2], ['BBB', 'BAB', 'BBB', 'BBB'], undefined , this);
-          this.tiles[3] = new Tile(tileImages[3], ['BBB', 'BBB', 'BBB', 'BAB'], undefined , this);
-          this.tiles[4] = new Tile(tileImages[4], ['BBB', 'BBB', 'BAB', 'BBB'], undefined , this);
+          this.tiles[0] = new Tile(tileImages[0], ['AAA', 'AAA', 'AAA', 'AAA']);
+          this.tiles[1] = new Tile(tileImages[1], ['BAB', 'BBB', 'BBB', 'BBB']);
+          this.tiles[2] = new Tile(tileImages[2], ['BBB', 'BAB', 'BBB', 'BBB']);
+          this.tiles[3] = new Tile(tileImages[3], ['BBB', 'BBB', 'BBB', 'BAB']);
+          this.tiles[4] = new Tile(tileImages[4], ['BBB', 'BBB', 'BAB', 'BBB']);
           break;
       case "pipes": 
       case "demo-tracks": 
       case "train-tracks":
       case "kenney-simple":
-          this.tiles[0] = new Tile(tileImages[0], ['AAA', 'AAA', 'AAA', 'AAA'], undefined , this);
-          this.tiles[1] = new Tile(tileImages[1], ['AAA', 'ABA', 'ABA', 'ABA'], undefined , this);
-          this.tiles[2] = new Tile(tileImages[2], ['ABA', 'AAA', 'ABA', 'ABA'], undefined , this);
-          this.tiles[3] = new Tile(tileImages[3], ['ABA', 'ABA', 'ABA', 'AAA'], undefined , this);
-          this.tiles[4] = new Tile(tileImages[4], ['ABA', 'ABA', 'AAA', 'ABA'], undefined , this);
+          this.tiles[0] = new Tile(tileImages[0], ['AAA', 'AAA', 'AAA', 'AAA']);
+          this.tiles[1] = new Tile(tileImages[1], ['AAA', 'ABA', 'ABA', 'ABA']);
+          this.tiles[2] = new Tile(tileImages[2], ['ABA', 'AAA', 'ABA', 'ABA']);
+          this.tiles[3] = new Tile(tileImages[3], ['ABA', 'ABA', 'ABA', 'AAA']);
+          this.tiles[4] = new Tile(tileImages[4], ['ABA', 'ABA', 'AAA', 'ABA']);
           break;
       case "kenney-all":
-          this.tiles[0] = new Tile(tileImages[0], ['AAA', 'AAA', 'AAA', 'AAA'], undefined , this);
-          this.tiles[1] = new Tile(tileImages[1], ['AAA', 'ABA', 'ABA', 'AAA'], undefined , this);
-          this.tiles[2] = new Tile(tileImages[2], ['AAA', 'AAA', 'ABA', 'ABA'], undefined , this);
-          this.tiles[3] = new Tile(tileImages[3], ['AAA', 'ABA', 'ABA', 'AAA'], undefined , this);
-          this.tiles[4] = new Tile(tileImages[4], ['AAA', 'AAA', 'ABA', 'ABA'], undefined , this);
-          this.tiles[5] = new Tile(tileImages[5], ['AAA', 'ABA', 'ABA', 'ABA'], undefined , this);
-          this.tiles[6] = new Tile(tileImages[6], ['ABA', 'AAA', 'ABA', 'AAA'], undefined , this);
-          this.tiles[7] = new Tile(tileImages[7], ['AAA', 'ABA', 'AAA', 'ABA'], undefined , this);
-          this.tiles[8] = new Tile(tileImages[8], ['ABA', 'ABA', 'ABA', 'ABA'], undefined , this);
-          this.tiles[9] = new Tile(tileImages[9], ['AAA', 'AAA', 'ABA', 'AAA'], undefined , this);
-          this.tiles[10] = new Tile(tileImages[10], ['AAA', 'AAA', 'AAA', 'ABA'], undefined , this);
-          this.tiles[11] = new Tile(tileImages[11], ['ABA', 'ABA', 'AAA', 'AAA'], undefined , this);
-          this.tiles[12] = new Tile(tileImages[12], ['ABA', 'AAA', 'AAA', 'ABA'], undefined , this);
-          this.tiles[13] = new Tile(tileImages[13], ['ABA', 'ABA', 'AAA', 'AAA'], undefined , this);
-          this.tiles[14] = new Tile(tileImages[14], ['ABA', 'AAA', 'AAA', 'ABA'], undefined , this);
-          this.tiles[15] = new Tile(tileImages[15], ['ABA', 'ABA', 'AAA', 'ABA'], undefined , this);
-          this.tiles[16] = new Tile(tileImages[16], ['ABA', 'ABA', 'ABA', 'AAA'], undefined , this);
-          this.tiles[17] = new Tile(tileImages[17], ['ABA', 'AAA', 'ABA', 'ABA'], undefined , this);
-          this.tiles[18] = new Tile(tileImages[18], ['ABA', 'AAA', 'AAA', 'AAA'], undefined , this);
-          this.tiles[19] = new Tile(tileImages[19], ['AAA', 'ABA', 'AAA', 'AAA'], undefined , this);
+          this.tiles[0] = new Tile(tileImages[0], ['AAA', 'AAA', 'AAA', 'AAA']);
+          this.tiles[1] = new Tile(tileImages[1], ['AAA', 'ABA', 'ABA', 'AAA']);
+          this.tiles[2] = new Tile(tileImages[2], ['AAA', 'AAA', 'ABA', 'ABA']);
+          this.tiles[3] = new Tile(tileImages[3], ['AAA', 'ABA', 'ABA', 'AAA']);
+          this.tiles[4] = new Tile(tileImages[4], ['AAA', 'AAA', 'ABA', 'ABA']);
+          this.tiles[5] = new Tile(tileImages[5], ['AAA', 'ABA', 'ABA', 'ABA']);
+          this.tiles[6] = new Tile(tileImages[6], ['ABA', 'AAA', 'ABA', 'AAA']);
+          this.tiles[7] = new Tile(tileImages[7], ['AAA', 'ABA', 'AAA', 'ABA']);
+          this.tiles[8] = new Tile(tileImages[8], ['ABA', 'ABA', 'ABA', 'ABA']);
+          this.tiles[9] = new Tile(tileImages[9], ['AAA', 'AAA', 'ABA', 'AAA']);
+          this.tiles[10] = new Tile(tileImages[10], ['AAA', 'AAA', 'AAA', 'ABA']);
+          this.tiles[11] = new Tile(tileImages[11], ['ABA', 'ABA', 'AAA', 'AAA']);
+          this.tiles[12] = new Tile(tileImages[12], ['ABA', 'AAA', 'AAA', 'ABA']);
+          this.tiles[13] = new Tile(tileImages[13], ['ABA', 'ABA', 'AAA', 'AAA']);
+          this.tiles[14] = new Tile(tileImages[14], ['ABA', 'AAA', 'AAA', 'ABA']);
+          this.tiles[15] = new Tile(tileImages[15], ['ABA', 'ABA', 'AAA', 'ABA']);
+          this.tiles[16] = new Tile(tileImages[16], ['ABA', 'ABA', 'ABA', 'AAA']);
+          this.tiles[17] = new Tile(tileImages[17], ['ABA', 'AAA', 'ABA', 'ABA']);
+          this.tiles[18] = new Tile(tileImages[18], ['ABA', 'AAA', 'AAA', 'AAA']);
+          this.tiles[19] = new Tile(tileImages[19], ['AAA', 'ABA', 'AAA', 'AAA']);
           break;
       case "kenney-curvy":
-          this.tiles[0] = new Tile(tileImages[0], ['AAA', 'AAA', 'AAA', 'AAA'], undefined , this);
-          this.tiles[1] = new Tile(tileImages[1], ['AAA', 'ABA', 'ABA', 'AAA'], undefined , this);
-          this.tiles[2] = new Tile(tileImages[2], ['AAA', 'AAA', 'ABA', 'ABA'], undefined , this);
-          this.tiles[3] = new Tile(tileImages[3], ['AAA', 'ABA', 'ABA', 'ABA'], undefined , this);
-          this.tiles[4] = new Tile(tileImages[4], ['ABA', 'AAA', 'ABA', 'AAA'], undefined , this);
-          this.tiles[5] = new Tile(tileImages[5], ['AAA', 'ABA', 'AAA', 'ABA'], undefined , this);
-          this.tiles[6] = new Tile(tileImages[6], ['ABA', 'ABA', 'ABA', 'ABA'], undefined , this);
-          this.tiles[7] = new Tile(tileImages[7], ['AAA', 'AAA', 'ABA', 'AAA'], undefined , this);
-          this.tiles[8] = new Tile(tileImages[8], ['AAA', 'AAA', 'AAA', 'ABA'], undefined , this);
-          this.tiles[9] = new Tile(tileImages[9], ['ABA', 'ABA', 'AAA', 'AAA'], undefined , this);
-          this.tiles[10] = new Tile(tileImages[10], ['ABA', 'AAA', 'AAA', 'ABA'], undefined , this);
-          this.tiles[11] = new Tile(tileImages[11], ['ABA', 'ABA', 'AAA', 'ABA'], undefined , this);
-          this.tiles[12] = new Tile(tileImages[12], ['ABA', 'ABA', 'ABA', 'AAA'], undefined , this);
-          this.tiles[13] = new Tile(tileImages[13], ['ABA', 'AAA', 'ABA', 'ABA'], undefined , this);
-          this.tiles[14] = new Tile(tileImages[14], ['ABA', 'AAA', 'AAA', 'AAA'], undefined , this);
-          this.tiles[15] = new Tile(tileImages[15], ['AAA', 'ABA', 'AAA', 'AAA'], undefined , this);
+          this.tiles[0] = new Tile(tileImages[0], ['AAA', 'AAA', 'AAA', 'AAA']);
+          this.tiles[1] = new Tile(tileImages[1], ['AAA', 'ABA', 'ABA', 'AAA']);
+          this.tiles[2] = new Tile(tileImages[2], ['AAA', 'AAA', 'ABA', 'ABA']);
+          this.tiles[3] = new Tile(tileImages[3], ['AAA', 'ABA', 'ABA', 'ABA']);
+          this.tiles[4] = new Tile(tileImages[4], ['ABA', 'AAA', 'ABA', 'AAA']);
+          this.tiles[5] = new Tile(tileImages[5], ['AAA', 'ABA', 'AAA', 'ABA']);
+          this.tiles[6] = new Tile(tileImages[6], ['ABA', 'ABA', 'ABA', 'ABA']);
+          this.tiles[7] = new Tile(tileImages[7], ['AAA', 'AAA', 'ABA', 'AAA']);
+          this.tiles[8] = new Tile(tileImages[8], ['AAA', 'AAA', 'AAA', 'ABA']);
+          this.tiles[9] = new Tile(tileImages[9], ['ABA', 'ABA', 'AAA', 'AAA']);
+          this.tiles[10] = new Tile(tileImages[10], ['ABA', 'AAA', 'AAA', 'ABA']);
+          this.tiles[11] = new Tile(tileImages[11], ['ABA', 'ABA', 'AAA', 'ABA']);
+          this.tiles[12] = new Tile(tileImages[12], ['ABA', 'ABA', 'ABA', 'AAA']);
+          this.tiles[13] = new Tile(tileImages[13], ['ABA', 'AAA', 'ABA', 'ABA']);
+          this.tiles[14] = new Tile(tileImages[14], ['ABA', 'AAA', 'AAA', 'AAA']);
+          this.tiles[15] = new Tile(tileImages[15], ['AAA', 'ABA', 'AAA', 'AAA']);
           break;
       default: 
           console.log(`problem with path '${path}'`)
@@ -192,7 +193,7 @@ class Run extends Phaser.Scene {
       //Reload key
       this.reload = this.input.keyboard.addKey('R');
 
-      this.ready = this.makeTilesArray("demo");
+      this.ready = this.makeTilesArray("circuit");
   }
 
   checkValid(arr, valid) {
@@ -235,6 +236,7 @@ class Run extends Phaser.Scene {
       this.drawn = [];
       this.entropyTexts.forEach(row => row.forEach(text => text.destroy()));
       this.entropyTexts = [];
+      this.rotationLog = [];
       this.ready = false;
       this.brakes = false;
   }
@@ -256,11 +258,13 @@ class Run extends Phaser.Scene {
               if (cell && cell.collapsed && !this.drawn[i + j * this.DIM]) {
                   let index = cell.options[0];
                   if (this.tiles[index]) {
-                        this.drawn[i + j * this.DIM] = this.add.image(i * w, j * h, this.tiles[index].img)
-                          .setOrigin(0, 0);
-                        this.drawn[i + j * this.DIM].setScale(
-                            w / this.drawn[i + j * this.DIM].width,
-                            h / this.drawn[i + j * this.DIM].height);
+                    let xPos = i * w + w / 2;
+                    let yPos = j * h + h / 2;
+                    this.drawn[i + j * this.DIM] = this.add.image(xPos, yPos, this.tiles[index].img)
+                    this.drawn[i + j * this.DIM].setScale(
+                        w / this.drawn[i + j * this.DIM].width,
+                        h / this.drawn[i + j * this.DIM].height);
+                    this.rotationLog[i + j * this.DIM] = this.tiles[index].rotate_flag;
                   }
               }
           }
@@ -283,7 +287,9 @@ class Run extends Phaser.Scene {
   
       // If all cells are collapsed, exit
       if (minEntropyCells.length === 0) {
-          return;
+            this.handleRotation(); // found that it works best to do this after solving so we don't have to worry about backtracking
+            this.ready = false;
+            return;
       }
   
       // Collapse a random cell with minimum entropy
@@ -417,6 +423,16 @@ class Run extends Phaser.Scene {
     this.drawn = Array(this.DIM * this.DIM).fill(null);
     this.ready = true;  // Reset ready state
     
-}
+    }
+
+    // rotate tiles properly
+    handleRotation(){
+        for (let j = 0; j < this.DIM; j++) {
+            for (let i = 0; i < this.DIM; i++) {
+                let r = this.rotationLog[i + j * this.DIM];
+                if(r) this.drawn[i + j * this.DIM].setRotation((Math.PI / 2) * r);
+            }
+        }
+    }
   
 }

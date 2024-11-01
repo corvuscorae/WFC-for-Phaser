@@ -9,18 +9,16 @@ function compareEdge(a, b) {
 }
 
 class Tile {
-  constructor(img, edges, i, scene) {
+  constructor(img, edges, i, rotate_flag) {
     this.img = img;
     this.edges = edges;
     this.up = [];
     this.right = [];
     this.down = [];
     this.left = [];
-    this.scene = scene;
 
-    if (i !== undefined) {
-      this.index = i;
-    }
+    this.index = i;
+    this.rotate_flag = rotate_flag;
   }
 
   analyze(tiles) {
@@ -51,7 +49,6 @@ class Tile {
 
   // TODO: fix
   rotate(num) {
-    let scene = Run;
     const w = this.img.width;
     const h = this.img.height;
     
@@ -60,6 +57,6 @@ class Tile {
     for (let i = 0; i < len; i++) {
       newEdges[i] = this.edges[(i - num + len) % len];
     }
-    return new Tile(this.img, newEdges, this.index);
+    return new Tile(this.img, newEdges, this.index, num);
   }
 }
