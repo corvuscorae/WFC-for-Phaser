@@ -27,6 +27,7 @@ class Init extends Phaser.Scene {
         {path: "rail", num: 7},
         {path: "kenney-all", num: 20},
         {path: "kenney-curvy", num: 16},
+        {path: "map-test", num: 14},
       ]
     
       for(let dir of indexedDirectories){
