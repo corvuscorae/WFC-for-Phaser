@@ -9,9 +9,10 @@ function compareEdge(a, b) {
 }
 
 class Tile {
-  constructor(img, edges, i, rotate_flag) {
+  constructor(img, edges, weight, i, rotate_flag) {
     this.img = img;
     this.edges = edges;
+    this.weight = weight;
     this.up = [];
     this.right = [];
     this.down = [];
@@ -57,6 +58,6 @@ class Tile {
     for (let i = 0; i < len; i++) {
       newEdges[i] = this.edges[(i - num + len) % len];
     }
-    return new Tile(this.img, newEdges, this.index, num);
+    return new Tile(this.img, newEdges, this.weight, this.index, num);
   }
 }
