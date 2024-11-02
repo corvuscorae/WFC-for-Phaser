@@ -48,7 +48,6 @@ class Tile {
     }
   }
 
-  // TODO: fix
   rotate(num) {
     const w = this.img.width;
     const h = this.img.height;

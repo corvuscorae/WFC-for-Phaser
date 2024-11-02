@@ -15,8 +15,6 @@ class Run extends Phaser.Scene {
       this.choiceStack = [];
       this.entropyTexts = [];
       this.rotationLog = [];
-
-      console.log(this.all)
   }
 
       // DEFINE ADJACENCIES FOR TILESET HERE!!
@@ -31,20 +29,23 @@ class Run extends Phaser.Scene {
       }
       switch(path){
         case "map-test":
-            this.tiles[0] = new Tile(tileImages[0], ['AAB', 'CCC', 'DDD', 'BAA'], 0.5);
-            this.tiles[1] = new Tile(tileImages[1], ['CCC', 'BAA', 'AAB', 'CCC'], 0.5);
-            this.tiles[2] = new Tile(tileImages[2], ['CCC', 'BAA', 'AAA', 'AAB'], 0.5);
-            this.tiles[3] = new Tile(tileImages[3], ['CCC', 'CCC', 'BAA', 'AAB'], 0.5);
-            this.tiles[4] = new Tile(tileImages[4], ['BAA', 'AAA', 'AAB', 'CCC'], 0.5);
-            this.tiles[5] = new Tile(tileImages[5], ['AAA', 'AAA', 'AAA', 'AAA'], 0.5);
-            this.tiles[6] = new Tile(tileImages[6], ['AAB', 'CCC', 'BAA', 'AAA'], 0.5);
-            this.tiles[7] = new Tile(tileImages[7], ['BAA', 'AAB', 'CCC', 'CCC'], 0.5);
-            this.tiles[8] = new Tile(tileImages[8], ['AAA', 'AAB', 'CCC', 'CAA'], 0.5);
-            this.tiles[9] = new Tile(tileImages[9], ['AAA', 'AAB', 'BAA', 'AAA'], 0.5);
-            this.tiles[10] = new Tile(tileImages[10], ['AAA', 'AAA', 'AAB', 'BAA'], 0.5);
-            this.tiles[11] = new Tile(tileImages[11], ['AAB', 'BAA', 'AAA', 'AAA'], 0.5);
-            this.tiles[12] = new Tile(tileImages[12], ['BAA', 'AAA', 'AAA', 'AAB'], 0.5);
-            this.tiles[13] = new Tile(tileImages[13], ['CCC', 'CCC', 'CCC', 'CCC'], 0.999);
+            this.tiles[0] = new Tile(tileImages[0], ['AAB', 'CCC', 'DDD', 'BAA'], 0.05);
+            this.tiles[1] = new Tile(tileImages[1], ['CCC', 'BAA', 'AAB', 'CCC'], 0.05);
+            this.tiles[2] = new Tile(tileImages[2], ['CCC', 'BAA', 'AAA', 'AAB'], 0.05);
+            this.tiles[3] = new Tile(tileImages[3], ['CCC', 'CCC', 'BAA', 'AAB'], 0.05);
+            this.tiles[4] = new Tile(tileImages[4], ['BAA', 'AAA', 'AAB', 'CCC'], 0.05);
+            this.tiles[5] = new Tile(tileImages[5], ['AAA', 'AAA', 'AAA', 'AAA'], 0.05);
+            this.tiles[6] = new Tile(tileImages[6], ['AAB', 'CCC', 'BAA', 'AAA'], 0.05);
+            this.tiles[7] = new Tile(tileImages[7], ['BAA', 'AAB', 'CCC', 'CCC'], 0.05);
+            this.tiles[8] = new Tile(tileImages[8], ['AAA', 'AAB', 'CCC', 'CAA'], 0.05);
+            this.tiles[9] = new Tile(tileImages[9], ['AAA', 'AAB', 'BAA', 'AAA'], 0.05);
+            this.tiles[10] = new Tile(tileImages[10], ['AAA', 'AAA', 'AAB', 'BAA'], 0.05);
+            this.tiles[11] = new Tile(tileImages[11], ['AAB', 'BAA', 'AAA', 'AAA'], 0.05);
+            this.tiles[12] = new Tile(tileImages[12], ['BAA', 'AAA', 'AAA', 'AAB'], 0.05);
+            this.tiles[13] = new Tile(tileImages[13], ['CCC', 'CCC', 'CCC', 'CCC'], 0.9);
+            this.tiles[14] = new Tile(tileImages[13], ['CCC', 'CCC', 'CCC', 'CCC'], 0.9);
+            this.tiles[15] = new Tile(tileImages[13], ['CCC', 'CCC', 'CCC', 'CCC'], 0.9);
+            this.tiles[16] = new Tile(tileImages[13], ['CCC', 'CCC', 'CCC', 'CCC'], 0.9);
             break;
         case "rail":
             this.tiles[0] = new Tile(tileImages[0], ['AAA', 'AAA', 'AAA', 'AAA'], 1);
@@ -145,6 +146,7 @@ class Run extends Phaser.Scene {
           this.tiles[i].index = i;
       }
       
+      console.log(this.tiles)
       const initialTileCount = this.tiles.length;
       for (let i = 0; i < initialTileCount; i++) {
       let tempTiles = [];
@@ -154,7 +156,13 @@ class Run extends Phaser.Scene {
       tempTiles = this.removeDuplicatedTiles(tempTiles);
       this.tiles = this.tiles.concat(tempTiles);
       }
-      console.log(this.all);
+      console.log(this.tiles)
+
+      // make weights array
+      this.tileWeights = [];
+      for(let tile of this.tiles){
+        this.tileWeights.push(tile.weight)
+      }
       
       // Generate the adjacency rules based on edges
       for (let i = 0; i < this.tiles.length; i++) {
@@ -167,9 +175,12 @@ class Run extends Phaser.Scene {
 
   removeDuplicatedTiles(tiles) {
       const uniqueTilesMap = {};
+      let i = 0;
       for (const tile of tiles) {
-          const key = tile.edges.join(','); // ex: "ABB,BCB,BBA,AAA"
-          uniqueTilesMap[key] = tile;
+        let uniqueify = tile.edges.every(val => val === tile.edges[0]); // true if all elems are the same
+        let key = tile.edges.join(','); // ex: "ABB,BCB,BBA,AAA"
+        if(uniqueify){ key += `${i}`; i++; }
+        uniqueTilesMap[key] = tile;
       }
       return Object.values(uniqueTilesMap);
   }
@@ -184,7 +195,7 @@ class Run extends Phaser.Scene {
         this.entropyTexts = Array.from({ length: this.DIM }, () => Array(this.DIM).fill(null));
       }
       for (let i = 0; i < this.DIM * this.DIM; i++) {
-          this.grid[i] = new Cell(this.tiles.length);
+          this.grid[i] = new Cell(this.tiles.length, this.tileWeights);
       }
   }
   // Linear Congruential Generator based on values from Knuth and H. W. Lewis
@@ -311,20 +322,20 @@ class Run extends Phaser.Scene {
       // Collapse a random cell with minimum entropy
       const cell = this.getRandomWithSeed(minEntropyCells,this.seed);
       cell.collapsed = true;
-  
+
       // Save state before choice for backtracking
       this.choiceStack.push({
           cellIndex: this.grid.indexOf(cell),
           remainingOptions: [...cell.options]
       });
-  
-      //const pick = this.getRandomWithSeed(cell.options, this.seed);
-      const pick = this.getWeightedRandom(cell.options);
+      
+      const pick = this.getRandomWithSeed(cell.options, this.seed);
       if (pick === undefined) {
           this.backtrack();
           return;
       }
       cell.options = [pick];
+      //console.log(cell.options)
   
       // Update neighbors based on adjacency rules, checking for deadlocks
       if (!this.updateNeighbors(cell)) {
@@ -433,7 +444,7 @@ class Run extends Phaser.Scene {
   
   clearGrid() {
     // Reset grid, drawn cells, and other states
-    this.grid = Array(this.DIM * this.DIM).fill(null).map(() => new Cell(this.tiles.length));
+    this.grid = Array(this.DIM * this.DIM).fill(null).map(() => new Cell(this.tiles.length, this.tileWeights));
     this.entropyTexts.forEach(row => row.forEach(text => text.destroy()));
     this.entropyTexts = Array.from({ length: this.DIM }, () => Array(this.DIM).fill(null));
     this.drawn.forEach(d => { if (d) d.destroy(); });
@@ -452,18 +463,4 @@ class Run extends Phaser.Scene {
         }
     }
     
-    /* TODO: debug 
-        > not properly applying weights
-        > also kinda clunky and slow :(
-    */
-    getWeightedRandom(options){
-        let r = Math.random();
-        let option = this.getRandomWithSeed(options, this.seed);
-        while(option < this.tiles.length && this.tiles[option].weight >= r){
-            let i = options.indexOf(option);
-            options.splice(i, 1)
-            option = this.getRandomWithSeed(options);
-        }
-        return option;
-    }
 }
