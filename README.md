@@ -14,3 +14,4 @@ CONTRIBUTIONS:
 [add your contributions here]
 - Raven Cruz: initial CodingTrain WFC algorithm translation into Phaser, set up tile adjacency lists
 - William Klunder: adjusted rotate to work properly, added seed usage, implemented entropy display
+- Naitik Poddar: Added intial backtracking mechanisms, Fixed weights
