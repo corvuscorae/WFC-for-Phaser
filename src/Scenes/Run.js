@@ -11,10 +11,15 @@ class Run extends Phaser.Scene {
       this.drawn = Array(this.DIM * this.DIM).fill(null); // Initialize with nulls for all cells
       this.ready = false;
       this.brakes = false;
+      this.done = false;
       //this.seed = 4532323321;
       this.choiceStack = [];
       this.entropyTexts = [];
       this.rotationLog = [];
+
+      this.baseLayer = this.add.layer();
+      this.landLayer = this.add.layer();
+      this.layers = [this.baseLayer, this.landLayer];
   }
 
       // DEFINE ADJACENCIES FOR TILESET HERE!!
@@ -27,6 +32,7 @@ class Run extends Phaser.Scene {
           > "${path}" does not contain tile images.`); 
       return false;
       }
+      console.log(tileImages)
       switch(path){
         case "map-test":
             this.tiles[0] = new Tile(tileImages[0], ['AAB', 'CCC', 'DDD', 'BAA'], 0.05);
@@ -242,7 +248,19 @@ class Run extends Phaser.Scene {
 
   create() {
       this.canvas = {width: config.width, height: config.height}
-      const directory = "tiles/"
+      this.w = this.canvas.width / this.DIM;
+      this.h = this.canvas.height / this.DIM;
+
+      this.waterTiles = [];
+      for (let j = 0; j < this.DIM; j++) {
+        for (let i = 0; i < this.DIM; i++) {
+            let index = i + j * this.DIM;
+            let xPos = i * this.w + this.w / 2;
+            let yPos = j * this.h + this.h / 2;
+            this.waterTiles[index] = {x: xPos, y: yPos, img: `waterTile`};
+        }
+      }
+      this.drawOnLayer(this.baseLayer, this.waterTiles)
 
       //Reload key
       this.reload = this.input.keyboard.addKey('R');
@@ -288,6 +306,9 @@ class Run extends Phaser.Scene {
           this.clearGrid();
           this.startTime = performance.now();
         }
+
+      // if this.done, then draw wfc() output
+      if(this.done) this.drawOnLayer(this.landLayer, this.drawn, this.rotationLog);
     }
 
     stopWFC() {
@@ -304,17 +325,16 @@ class Run extends Phaser.Scene {
       this.rotationLog = [];
       this.ready = false;
       this.brakes = false;
+
+      this.layers.forEach(layer => layer.removeAll());
   }
 
     WFC() {
-        const w = this.canvas.width / this.DIM;
-        const h = this.canvas.height / this.DIM;
-  
         // Draw only cells that need updating
         for (let j = 0; j < this.DIM; j++) {
             for (let i = 0; i < this.DIM; i++) {
-                let xPos = i * w + w / 2;
-                let yPos = j * h + h / 2;
+                let xPos = i * this.w + this.w / 2;
+                let yPos = j * this.h + this.h / 2;
                 let cell = this.grid[i + j * this.DIM];
                 const entropy = cell.options.length;
                 if(!cell.collapsed && this.entropyTexts[j][i] == undefined){
@@ -325,11 +345,9 @@ class Run extends Phaser.Scene {
                 if (cell && cell.collapsed && !this.drawn[i + j * this.DIM]) {
                     let index = cell.options[0];
                     if (this.tiles[index]) {
-                        this.drawn[i + j * this.DIM] = this.add.image(xPos, yPos, this.tiles[index].img)
-                        this.drawn[i + j * this.DIM].setScale(
-                            w / this.drawn[i + j * this.DIM].width,
-                            h / this.drawn[i + j * this.DIM].height);
+                        this.drawn[i + j * this.DIM] = { x: xPos, y: yPos, img: this.tiles[index].img };
                         this.rotationLog[i + j * this.DIM] = this.tiles[index].rotate_flag;
+                        this.entropyTexts[j][i].destroy();
                     }
                 }
             }
@@ -352,9 +370,9 @@ class Run extends Phaser.Scene {
   
       // If all cells are collapsed, exit
       if (minEntropyCells.length === 0) {
-            this.handleRotation(); // found that it works best to do this after solving so we don't have to worry about backtracking
+            //this.handleRotation(); // found that it works best to do this after solving so we don't have to worry about backtracking
             this.ready = false;
-            console.log("DONE!")
+            this.done = true;
             return;
       }
   
@@ -486,18 +504,20 @@ class Run extends Phaser.Scene {
     this.grid = Array(this.DIM * this.DIM).fill(null).map(() => new Cell(this.tiles.length, this.tileWeights));
     this.entropyTexts.forEach(row => row.forEach(text => text.destroy()));
     this.entropyTexts = Array.from({ length: this.DIM }, () => Array(this.DIM).fill(null));
-    this.drawn.forEach(d => { if (d) d.destroy(); });
+    //this.drawn.forEach(d => { if (d) d.destroy(); });
     this.drawn = Array(this.DIM * this.DIM).fill(null);
+    this.layers.forEach(layer => layer.removeAll());
     this.ready = true;  // Reset ready state
     
     }
 
     // rotate tiles properly
-    handleRotation(){
+    handleRotation(layer){
         for (let j = 0; j < this.DIM; j++) {
             for (let i = 0; i < this.DIM; i++) {
-                let r = this.rotationLog[i + j * this.DIM];
-                if(r) this.drawn[i + j * this.DIM].setRotation((Math.PI / 2) * r);
+                let index = i + j * this.DIM;
+                let r = this.rotationLog[index];
+                if(r) layer.getAt(index).setRotation((Math.PI / 2) * r);
             }
         }
     }
@@ -534,6 +554,24 @@ class Run extends Phaser.Scene {
         }
     
         return undefined; // If no option matches, return undefined for backtracking
+    }
+
+    drawOnLayer(layer, image, rotations){
+        for (let j = 0; j < this.DIM; j++) {
+            for (let i = 0; i < this.DIM; i++) {
+                let r = this.rotationLog[i + j * this.DIM];
+                let index = i + j * this.DIM;
+                let imageSprite = this.add.sprite(
+                    image[index].x, 
+                    image[index].y, 
+                    image[index].img);
+                imageSprite.setScale(this.w / imageSprite.width, this.h / imageSprite.height);
+                layer.addAt(imageSprite, index);
+            }
+        }
+
+        if(rotations) this.handleRotation(layer, rotations);
+        this.done = false;
     }
     
 }

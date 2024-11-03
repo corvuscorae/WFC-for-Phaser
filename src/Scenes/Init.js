@@ -55,6 +55,8 @@ class Init extends Phaser.Scene {
         };
         this.all.push({ key: dir, array: imageKeys });
       }
+
+      this.load.image("waterTile", `water/water.png`);
     }
 
     create() {
