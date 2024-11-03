@@ -198,20 +198,47 @@ class Run extends Phaser.Scene {
           this.grid[i] = new Cell(this.tiles.length, this.tileWeights);
       }
   }
-  // Linear Congruential Generator based on values from Knuth and H. W. Lewis
-  seededRandom(seed) {
-    let m = 2 ** 32;
-    let a = 1664525;
-    let c = 1013904223;
-    seed = (a * seed + c) % m;
-    return seed / m;
-  }
+
+//   seededRandom(seed) {
+//     let m = 2 ** 32;
+//     let a = 1664525;
+//     let c = 1013904223;
+//     seed = (a * seed + c) % m;
+//     return seed / m;
+//   }
   
-  getRandomWithSeed(array, seed){
-    if(!seed){seed = Math.random()*10133204323}
-    const randomIndex = Math.floor(this.seededRandom(seed) * array.length);
-    return array[randomIndex];
-  }
+//   getRandomWithSeed(array, seed){
+//     if(!seed){seed = Math.random()*10133204323}
+//     const randomIndex = Math.floor(this.seededRandom(seed) * array.length);
+//     return array[randomIndex];
+//   }
+
+// Linear Congruential Generator based on values from Knuth and H. W. Lewis  
+    seededRandom(seed) {
+        let m = 2 ** 32; 
+        let a = 1664525; 
+        let c = 1013904223; 
+        seed = (a * seed + c) % m; // Update the seed
+        return {
+            seed: seed,
+            value: seed / m 
+        };
+    }
+
+    // Updated getRandomWithSeed to maintain seeding
+    getRandomWithSeed(array, seed) {
+        if (!seed) {
+            seed = this.seed || Math.random() * 10133204323;
+        }
+
+        let { seed: newSeed, value: randomValue } = this.seededRandom(seed);
+
+        // Update the seed for the next call
+        this.seed = newSeed;
+
+        const randomIndex = Math.floor(randomValue * array.length);
+        return array[randomIndex];
+    }
 
   create() {
       this.canvas = {width: config.width, height: config.height}
@@ -219,6 +246,8 @@ class Run extends Phaser.Scene {
 
       //Reload key
       this.reload = this.input.keyboard.addKey('R');
+
+      this.startTime = performance.now();
 
       this.ready = this.makeTilesArray("map-test");
   }
@@ -240,7 +269,16 @@ class Run extends Phaser.Scene {
   }
 
     update() {
-        if(this.ready){ this.WFC(); }
+        if (this.ready) {
+        this.WFC();
+
+            // Check if WFC is completed
+            if (!this.ready) {
+                // End timing for WFC and print total time
+                const endTime = performance.now();
+                console.log(`WFC completed in ${(endTime - this.startTime).toFixed(2)} ms`);
+            }
+        }
         if(this.brakes) { this.stopWFC() }
 
         if (Phaser.Input.Keyboard.JustDown(this.reload)){
@@ -248,6 +286,7 @@ class Run extends Phaser.Scene {
           // noise.seed(this.seed);
           // this.scene.restart();
           this.clearGrid();
+          this.startTime = performance.now();
         }
     }
 
@@ -461,6 +500,40 @@ class Run extends Phaser.Scene {
                 if(r) this.drawn[i + j * this.DIM].setRotation((Math.PI / 2) * r);
             }
         }
+    }
+    
+    /* TODO: debug 
+        > not properly applying weights
+        > also kinda clunky and slow :(
+    */
+    // getWeightedRandom(options){
+    //     let r = Math.random();
+    //     let option = this.getRandomWithSeed(options, this.seed);
+    //     while(option < this.tiles.length && this.tiles[option].weight >= r){
+    //         let i = options.indexOf(option);
+    //         options.splice(i, 1)
+    //         option = this.getRandomWithSeed(options);
+    //     }
+    //     return option;
+    // }
+
+    getWeightedRandom(options) {
+        let totalWeight = options.reduce((sum, index) => sum + this.tiles[index].weight, 0);
+        let random = this.seededRandom(this.seed).value * totalWeight;
+    
+        for (let i = 0; i < options.length; i++) {
+            const optionIndex = options[i];
+            const weight = this.tiles[optionIndex].weight;
+            if (random < weight) {
+                // Update the seed state
+                let { seed: newSeed } = this.seededRandom(this.seed);
+                this.seed = newSeed;
+                return optionIndex;
+            }
+            random -= weight;
+        }
+    
+        return undefined; // If no option matches, return undefined for backtracking
     }
     
 }
