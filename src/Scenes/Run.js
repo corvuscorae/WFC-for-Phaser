@@ -31,21 +31,21 @@ class Run extends Phaser.Scene {
         case "map-test":
             this.tiles[0] = new Tile(tileImages[0], ['AAB', 'CCC', 'DDD', 'BAA'], 0.05);
             this.tiles[1] = new Tile(tileImages[1], ['CCC', 'BAA', 'AAB', 'CCC'], 0.05);
-            this.tiles[2] = new Tile(tileImages[2], ['CCC', 'BAA', 'AAA', 'AAB'], 0.05);
-            this.tiles[3] = new Tile(tileImages[3], ['CCC', 'CCC', 'BAA', 'AAB'], 0.05);
-            this.tiles[4] = new Tile(tileImages[4], ['BAA', 'AAA', 'AAB', 'CCC'], 0.05);
-            this.tiles[5] = new Tile(tileImages[5], ['AAA', 'AAA', 'AAA', 'AAA'], 0.05);
-            this.tiles[6] = new Tile(tileImages[6], ['AAB', 'CCC', 'BAA', 'AAA'], 0.05);
-            this.tiles[7] = new Tile(tileImages[7], ['BAA', 'AAB', 'CCC', 'CCC'], 0.05);
-            this.tiles[8] = new Tile(tileImages[8], ['AAA', 'AAB', 'CCC', 'CAA'], 0.05);
-            this.tiles[9] = new Tile(tileImages[9], ['AAA', 'AAB', 'BAA', 'AAA'], 0.05);
-            this.tiles[10] = new Tile(tileImages[10], ['AAA', 'AAA', 'AAB', 'BAA'], 0.05);
-            this.tiles[11] = new Tile(tileImages[11], ['AAB', 'BAA', 'AAA', 'AAA'], 0.05);
-            this.tiles[12] = new Tile(tileImages[12], ['BAA', 'AAA', 'AAA', 'AAB'], 0.05);
-            this.tiles[13] = new Tile(tileImages[13], ['CCC', 'CCC', 'CCC', 'CCC'], 0.9);
-            this.tiles[14] = new Tile(tileImages[13], ['CCC', 'CCC', 'CCC', 'CCC'], 0.9);
-            this.tiles[15] = new Tile(tileImages[13], ['CCC', 'CCC', 'CCC', 'CCC'], 0.9);
-            this.tiles[16] = new Tile(tileImages[13], ['CCC', 'CCC', 'CCC', 'CCC'], 0.9);
+            //this.tiles[2] = new Tile(tileImages[2], ['CCC', 'BAA', 'AAA', 'AAB'], 0.05);
+            this.tiles[2] = new Tile(tileImages[3], ['CCC', 'CCC', 'BAA', 'AAB'], 0.05);
+            //this.tiles[4] = new Tile(tileImages[4], ['BAA', 'AAA', 'AAB', 'CCC'], 0.05);
+            this.tiles[3] = new Tile(tileImages[5], ['AAA', 'AAA', 'AAA', 'AAA'], 0.05);
+            //this.tiles[6] = new Tile(tileImages[6], ['AAB', 'CCC', 'BAA', 'AAA'], 0.05);
+            this.tiles[4] = new Tile(tileImages[7], ['BAA', 'AAB', 'CCC', 'CCC'], 0.05);
+            //this.tiles[8] = new Tile(tileImages[8], ['AAA', 'AAB', 'CCC', 'CAA'], 0.05);
+            this.tiles[5] = new Tile(tileImages[9], ['AAA', 'AAB', 'BAA', 'AAA'], 0.05);
+            this.tiles[6] = new Tile(tileImages[10], ['AAA', 'AAA', 'AAB', 'BAA'], 0.05);
+            this.tiles[7] = new Tile(tileImages[11], ['AAB', 'BAA', 'AAA', 'AAA'], 0.05);
+            this.tiles[8] = new Tile(tileImages[12], ['BAA', 'AAA', 'AAA', 'AAB'], 0.05);
+            this.tiles[9] = new Tile(tileImages[13], ['CCC', 'CCC', 'CCC', 'CCC'], 0.9);
+            this.tiles[10] = new Tile(tileImages[13], ['CCC', 'CCC', 'CCC', 'CCC'], 0.9);
+            this.tiles[11] = new Tile(tileImages[13], ['CCC', 'CCC', 'CCC', 'CCC'], 0.9);
+            this.tiles[12] = new Tile(tileImages[13], ['CCC', 'CCC', 'CCC', 'CCC'], 0.9);
             break;
         case "rail":
             this.tiles[0] = new Tile(tileImages[0], ['AAA', 'AAA', 'AAA', 'AAA'], 1);
@@ -81,7 +81,7 @@ class Run extends Phaser.Scene {
             this.tiles[3] = new Tile(tileImages[3], ['BBB', 'BBB', 'BBB', 'AAA'], 1);
             this.tiles[4] = new Tile(tileImages[4], ['BBB', 'BBB', 'AAA', 'BBB'], 1);
             break;
-        case "mountains": // fix adjacencies ??
+        case "mountains": 
             this.tiles[0] = new Tile(tileImages[0], ['AAA', 'AAA', 'AAA', 'AAA'], 1);
             this.tiles[1] = new Tile(tileImages[1], ['BAB', 'BBB', 'BBB', 'BBB'], 1);
             this.tiles[2] = new Tile(tileImages[2], ['BBB', 'BAB', 'BBB', 'BBB'], 1);
@@ -251,7 +251,6 @@ class Run extends Phaser.Scene {
         }
     }
 
-    // TODO: scene slows down when "Go" is clicked several times. Likely mem leak -- FIND AND FIX
     stopWFC() {
       if (this.drawn) {
           for (let d of this.drawn) {
@@ -316,6 +315,7 @@ class Run extends Phaser.Scene {
       if (minEntropyCells.length === 0) {
             this.handleRotation(); // found that it works best to do this after solving so we don't have to worry about backtracking
             this.ready = false;
+            console.log("DONE!")
             return;
       }
   
