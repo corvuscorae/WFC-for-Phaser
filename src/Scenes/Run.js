@@ -19,7 +19,7 @@ class Run extends Phaser.Scene {
 
       this.baseLayer = this.add.layer();
       this.landLayer = this.add.layer();
-      this.layers = [this.baseLayer, this.landLayer];
+      this.layers = [this.landLayer];
   }
 
       // DEFINE ADJACENCIES FOR TILESET HERE!!
@@ -32,17 +32,16 @@ class Run extends Phaser.Scene {
           > "${path}" does not contain tile images.`); 
       return false;
       }
-      console.log(tileImages)
       switch(path){
         case "map-test":
-            this.tiles[0] = new Tile(tileImages[0], ['AAB', 'CCC', 'DDD', 'BAA'], 0.05);
+            this.tiles[0] = new Tile(tileImages[0], ['AAB', 'CCC', 'CCC', 'DAA'], 0.05);
             this.tiles[1] = new Tile(tileImages[1], ['CCC', 'BAA', 'AAB', 'CCC'], 0.05);
             //this.tiles[2] = new Tile(tileImages[2], ['CCC', 'BAA', 'AAA', 'AAB'], 0.05);
             this.tiles[2] = new Tile(tileImages[3], ['CCC', 'CCC', 'BAA', 'AAB'], 0.05);
             //this.tiles[4] = new Tile(tileImages[4], ['BAA', 'AAA', 'AAB', 'CCC'], 0.05);
             this.tiles[3] = new Tile(tileImages[5], ['AAA', 'AAA', 'AAA', 'AAA'], 0.05);
             //this.tiles[6] = new Tile(tileImages[6], ['AAB', 'CCC', 'BAA', 'AAA'], 0.05);
-            this.tiles[4] = new Tile(tileImages[7], ['BAA', 'AAB', 'CCC', 'CCC'], 0.05);
+            this.tiles[4] = new Tile(tileImages[7], ['BAA', 'AAD', 'CCC', 'CCC'], 0.05);
             //this.tiles[8] = new Tile(tileImages[8], ['AAA', 'AAB', 'CCC', 'CAA'], 0.05);
             this.tiles[5] = new Tile(tileImages[9], ['AAA', 'AAB', 'BAA', 'AAA'], 0.05);
             this.tiles[6] = new Tile(tileImages[10], ['AAA', 'AAA', 'AAB', 'BAA'], 0.05);
@@ -152,7 +151,7 @@ class Run extends Phaser.Scene {
           this.tiles[i].index = i;
       }
       
-      console.log(this.tiles)
+      //console.log(this.tiles)
       const initialTileCount = this.tiles.length;
       for (let i = 0; i < initialTileCount; i++) {
       let tempTiles = [];
@@ -162,7 +161,7 @@ class Run extends Phaser.Scene {
       tempTiles = this.removeDuplicatedTiles(tempTiles);
       this.tiles = this.tiles.concat(tempTiles);
       }
-      console.log(this.tiles)
+      //console.log(this.tiles)
 
       // make weights array
       this.tileWeights = [];
@@ -338,7 +337,7 @@ class Run extends Phaser.Scene {
                 let cell = this.grid[i + j * this.DIM];
                 const entropy = cell.options.length;
                 if(!cell.collapsed && this.entropyTexts[j][i] == undefined){
-                    this.entropyTexts[j][i] = this.add.text(xPos, yPos, `${entropy}`, { fontFamily: 'Arial', fontSize: 12, color: 'white'});
+                    this.entropyTexts[j][i] = this.add.text(xPos, yPos, `${entropy}`, { fontFamily: 'Arial', fontSize: 12, color: 'black'});
                 } else if(!cell.collapsed){
                   this.entropyTexts[j][i].setText(`${entropy}`)
                 }
