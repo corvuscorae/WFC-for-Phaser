@@ -496,7 +496,11 @@ class Run extends Phaser.Scene {
                   cell.collapsed = true;
               }
             const entropy = cell.options.length;
-            this.entropyTexts[j][i].setText(entropy.toString())
+            try{
+                this.entropyTexts[j][i].setText(entropy.toString());
+            } catch{
+                this.choiceStack = [];
+            }
           }
       }
       return updated;
@@ -516,7 +520,6 @@ class Run extends Phaser.Scene {
       const cell = this.grid[cellIndex];
   
       remainingOptions.splice(remainingOptions.indexOf(cell.options[0]), 1);
-  
       if (remainingOptions.length > 0) {
           cell.options = remainingOptions;
           cell.collapsed = false;  // Reopen the cell for processing
@@ -553,20 +556,6 @@ class Run extends Phaser.Scene {
         }
     }
     
-    /* TODO: debug 
-        > not properly applying weights
-        > also kinda clunky and slow :(
-    */
-    // getWeightedRandom(options){
-    //     let r = Math.random();
-    //     let option = this.getRandomWithSeed(options, this.seed);
-    //     while(option < this.tiles.length && this.tiles[option].weight >= r){
-    //         let i = options.indexOf(option);
-    //         options.splice(i, 1)
-    //         option = this.getRandomWithSeed(options);
-    //     }
-    //     return option;
-    // }
 
     getWeightedRandom(options) {
         let totalWeight = options.reduce((sum, index) => sum + this.tiles[index].weight, 0);
