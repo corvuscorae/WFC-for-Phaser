@@ -1,17 +1,11 @@
-issues:
-- TODO: scene slows down when "Go" is clicked several times. Likely mem leak -- FIND AND FIX
-
-next:
-- add map tiles
-- decorations?
-- r-key regeneration?
-- context-sensitive generation?
-- visualization of generation approach? [<- this is only partially done so far]
-- improved map coherence?
-- [not for credit but would be nice] learning functionality
-
 CONTRIBUTIONS:
-[add your contributions here]
-- Raven Cruz: initial CodingTrain WFC algorithm translation into Phaser, set up tile adjacency lists
+- WFC algorithm by Maxim Gumin: https://github.com/mxgmn/WaveFunctionCollapse 
+- This implementation is inspired by Dan Shiffman's p5.js implementation: https://github.com/CodingTrain/Wave-Function-Collapse/tree/main  
+- Tileset by Kenney: https://kenney.nl/assets/map-pack
+- Raven Cruz: initial CodingTrain WFC algorithm translation into Phaser, set up tile adjacency lists, set up weights, implemented support for multiple layers
 - William Klunder: adjusted rotate to work properly, added seed usage, implemented entropy display
 - Naitik Poddar: Added intial backtracking mechanisms, Fixed weights, decoration tiles
+
+next:
+- improved map coherence
+- learning functionality
