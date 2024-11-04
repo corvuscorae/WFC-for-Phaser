@@ -12,6 +12,7 @@ class Run extends Phaser.Scene {
       this.ready = false;
       this.brakes = false;
       this.done = false;
+      this.decorationsAdded = false;
       //this.seed = 4532323321;
       this.choiceStack = [];
       this.entropyTexts = [];
@@ -19,7 +20,8 @@ class Run extends Phaser.Scene {
 
       this.baseLayer = this.add.layer();
       this.landLayer = this.add.layer();
-      this.layers = [this.landLayer];
+      this.decorationLayer = this.add.layer();
+      this.layers = [this.landLayer, this.decorationLayer];
   }
 
       // DEFINE ADJACENCIES FOR TILESET HERE!!
@@ -290,10 +292,13 @@ class Run extends Phaser.Scene {
         this.WFC();
 
             // Check if WFC is completed
-            if (!this.ready) {
+            if (!this.ready && !this.decorationsAdded) {
                 // End timing for WFC and print total time
                 const endTime = performance.now();
                 console.log(`WFC completed in ${(endTime - this.startTime).toFixed(2)} ms`);
+
+                this.addAllDecorations();
+                this.decorationsAdded = true;
             }
         }
         if(this.brakes) { this.stopWFC() }
@@ -401,6 +406,33 @@ class Run extends Phaser.Scene {
         this.brakes = true;
       }
   }
+
+    addAllDecorations() {
+        for (let j = 0; j < this.DIM; j++) {
+            for (let i = 0; i < this.DIM; i++) {
+                let index = i + j * this.DIM;
+                let tileIndex = this.grid[index].options[0]; 
+
+                if (tileIndex >= 0 && tileIndex < 10) {
+                    let xPos = i * this.w + this.w / 2;
+                    let yPos = j * this.h + this.h / 2;
+                    this.addDecoration(xPos, yPos);
+                }
+            }
+        }
+    }
+
+    addDecoration(x, y) {
+        // probability 20%
+        if (Math.random() < 0.2) {
+            const decorations = ["Tree1", "Tree2", "Wood", "BGrass", "Grass", "Rock"];
+            const decorationType = decorations[Math.floor(Math.random() * decorations.length)];
+
+            const decoration = this.add.sprite(x, y, decorationType);
+            decoration.setScale(this.w / decoration.width, this.h / decoration.height);
+            this.decorationLayer.add(decoration);
+        }
+    }
   
   // Update neighbors and validate adjacency constraints, returns false if stuck
   updateNeighbors(cell) {
@@ -499,15 +531,15 @@ class Run extends Phaser.Scene {
   }
   
   clearGrid() {
-    // Reset grid, drawn cells, and other states
-    this.grid = Array(this.DIM * this.DIM).fill(null).map(() => new Cell(this.tiles.length, this.tileWeights));
-    this.entropyTexts.forEach(row => row.forEach(text => text.destroy()));
-    this.entropyTexts = Array.from({ length: this.DIM }, () => Array(this.DIM).fill(null));
-    //this.drawn.forEach(d => { if (d) d.destroy(); });
-    this.drawn = Array(this.DIM * this.DIM).fill(null);
-    this.layers.forEach(layer => layer.removeAll());
-    this.ready = true;  // Reset ready state
-    
+        // Reset grid, drawn cells, and other states
+        this.grid = Array(this.DIM * this.DIM).fill(null).map(() => new Cell(this.tiles.length, this.tileWeights));
+        this.entropyTexts.forEach(row => row.forEach(text => text.destroy()));
+        this.entropyTexts = Array.from({ length: this.DIM }, () => Array(this.DIM).fill(null));
+        //this.drawn.forEach(d => { if (d) d.destroy(); });
+        this.drawn = Array(this.DIM * this.DIM).fill(null);
+        this.layers.forEach(layer => layer.removeAll());
+        this.ready = true;  // Reset ready state
+        this.decorationsAdded = false; // Reset decorations state
     }
 
     // rotate tiles properly

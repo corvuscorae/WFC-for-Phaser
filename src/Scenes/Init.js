@@ -57,6 +57,13 @@ class Init extends Phaser.Scene {
       }
 
       this.load.image("waterTile", `water/water.png`);
+
+      this.load.image("Tree1", "decorations/Tree1.png");
+      this.load.image("Tree2", "decorations/Tree2.png");
+      this.load.image("Wood", "decorations/Wood.png");
+      this.load.image("BGrass", "decorations/BGrass.png");
+      this.load.image("Grass", "decorations/Grass.png");
+      this.load.image("Rock", "decorations/Rock.png");
     }
 
     create() {
