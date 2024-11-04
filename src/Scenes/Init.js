@@ -10,23 +10,23 @@ class Init extends Phaser.Scene {
         
         // naming convention: [blank, down, left, right, up].png
         let directionDirectories = [  
-            "demo",
-            "demo-tracks",
-            "mountains",
-            "pipes",
-            "polka",
-            "roads",
-            "train-tracks",
-            "kenney-simple"
+            //"demo",
+            //"demo-tracks",
+            //"mountains",
+            //"pipes",
+            //"polka",
+            //"roads",
+            //"train-tracks",
+            //"kenney-simple"
         ]
     
       // naming convention: [i].png 
       let indexedDirectories = [  
-        {path: "circuit", num: 13},
-        {path: "circuit-coding-train", num: 13},
-        {path: "rail", num: 7},
-        {path: "kenney-all", num: 20},
-        {path: "kenney-curvy", num: 16},
+        //{path: "circuit", num: 13},
+        //{path: "circuit-coding-train", num: 13},
+        //{path: "rail", num: 7},
+        //{path: "kenney-all", num: 20},
+        //{path: "kenney-curvy", num: 16},
         {path: "map-test", num: 14},
       ]
     

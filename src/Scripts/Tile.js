@@ -9,7 +9,7 @@ function compareEdge(a, b) {
 }
 
 class Tile {
-  constructor(img, edges, weight, i, rotate_flag) {
+  constructor(img, edges, weight, isBlank, i, rotateFlag) {
     this.img = img;
     this.edges = edges;
     this.weight = weight;
@@ -18,8 +18,9 @@ class Tile {
     this.down = [];
     this.left = [];
 
+    this.isBlank = isBlank;
     this.index = i;
-    this.rotate_flag = rotate_flag;
+    this.rotateFlag = rotateFlag;
   }
 
   analyze(tiles) {
@@ -57,6 +58,6 @@ class Tile {
     for (let i = 0; i < len; i++) {
       newEdges[i] = this.edges[(i - num + len) % len];
     }
-    return new Tile(this.img, newEdges, this.weight, this.index, num);
+    return new Tile(this.img, newEdges, this.weight, this.is_blank, this.index, num);
   }
 }

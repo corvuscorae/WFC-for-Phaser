@@ -49,10 +49,10 @@ class Run extends Phaser.Scene {
             this.tiles[6] = new Tile(tileImages[10], ['AAA', 'AAA', 'AAB', 'BAA'], 0.05);
             this.tiles[7] = new Tile(tileImages[11], ['AAB', 'BAA', 'AAA', 'AAA'], 0.05);
             this.tiles[8] = new Tile(tileImages[12], ['BAA', 'AAA', 'AAA', 'AAB'], 0.05);
-            this.tiles[9] = new Tile(tileImages[13], ['CCC', 'CCC', 'CCC', 'CCC'], 0.9);
-            this.tiles[10] = new Tile(tileImages[13], ['CCC', 'CCC', 'CCC', 'CCC'], 0.9);
-            this.tiles[11] = new Tile(tileImages[13], ['CCC', 'CCC', 'CCC', 'CCC'], 0.9);
-            this.tiles[12] = new Tile(tileImages[13], ['CCC', 'CCC', 'CCC', 'CCC'], 0.9);
+            this.tiles[9] = new Tile(tileImages[13], ['CCC', 'CCC', 'CCC', 'CCC'], 0.9, true);
+            this.tiles[10] = new Tile(tileImages[13], ['CCC', 'CCC', 'CCC', 'CCC'], 0.9, true);
+            this.tiles[11] = new Tile(tileImages[13], ['CCC', 'CCC', 'CCC', 'CCC'], 0.9, true);
+            this.tiles[12] = new Tile(tileImages[13], ['CCC', 'CCC', 'CCC', 'CCC'], 0.9, true);
             break;
         case "rail":
             this.tiles[0] = new Tile(tileImages[0], ['AAA', 'AAA', 'AAA', 'AAA'], 1);
@@ -296,9 +296,6 @@ class Run extends Phaser.Scene {
                 // End timing for WFC and print total time
                 const endTime = performance.now();
                 console.log(`WFC completed in ${(endTime - this.startTime).toFixed(2)} ms`);
-
-                this.addAllDecorations();
-                this.decorationsAdded = true;
             }
         }
         if(this.brakes) { this.stopWFC() }
@@ -312,7 +309,11 @@ class Run extends Phaser.Scene {
         }
 
       // if this.done, then draw wfc() output
-      if(this.done) this.drawOnLayer(this.landLayer, this.drawn, this.rotationLog);
+      if(this.done && !this.decorationsAdded){ 
+        this.drawOnLayer(this.landLayer, this.drawn, this.rotationLog); 
+        this.addAllDecorations([this.landLayer]);
+        this.decorationsAdded = true;      
+      }
     }
 
     stopWFC() {
@@ -349,8 +350,8 @@ class Run extends Phaser.Scene {
                 if (cell && cell.collapsed && !this.drawn[i + j * this.DIM]) {
                     let index = cell.options[0];
                     if (this.tiles[index]) {
-                        this.drawn[i + j * this.DIM] = { x: xPos, y: yPos, img: this.tiles[index].img };
-                        this.rotationLog[i + j * this.DIM] = this.tiles[index].rotate_flag;
+                        this.drawn[i + j * this.DIM] = { x: xPos, y: yPos, img: this.tiles[index].img, isBlank: this.tiles[index].isBlank };
+                        this.rotationLog[i + j * this.DIM] = this.tiles[index].rotateFlag;
                         this.entropyTexts[j][i].destroy();
                     }
                 }
@@ -407,20 +408,24 @@ class Run extends Phaser.Scene {
       }
   }
 
-    addAllDecorations() {
-        for (let j = 0; j < this.DIM; j++) {
-            for (let i = 0; i < this.DIM; i++) {
-                let index = i + j * this.DIM;
-                let tileIndex = this.grid[index].options[0]; 
+  addAllDecorations(depencies) {
+    for (let j = 0; j < this.DIM; j++) {
+        for (let i = 0; i < this.DIM; i++) {
+            let index = i + j * this.DIM;
+            let tileIndex = this.grid[index].options[0]; 
+            let blank = false;
 
-                if (tileIndex >= 0 && tileIndex < 10) {
-                    let xPos = i * this.w + this.w / 2;
-                    let yPos = j * this.h + this.h / 2;
-                    this.addDecoration(xPos, yPos);
-                }
+            if (tileIndex >= 0 && tileIndex < 10) {
+                let xPos = i * this.w + this.w / 2;
+                let yPos = j * this.h + this.h / 2;
+                depencies.forEach((layer) => {
+                    blank = layer.getAt(index).isBlank;
+                }) 
+                if(!blank) this.addDecoration(xPos, yPos);
             }
         }
     }
+}
 
     addDecoration(x, y) {
         // probability 20%
@@ -586,6 +591,7 @@ class Run extends Phaser.Scene {
                     image[index].y, 
                     image[index].img);
                 imageSprite.setScale(this.w / imageSprite.width, this.h / imageSprite.height);
+                imageSprite.isBlank = image[index].isBlank;
                 layer.addAt(imageSprite, index);
             }
         }
